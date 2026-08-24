@@ -1,160 +1,118 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#121212"
-    android:padding="16dp">
+package com.umnicode.samp_launcher.ui.home
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+import android.content.Context
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.umnicode.samp_launcher.LauncherApplication
+import com.umnicode.samp_launcher.R
+import com.umnicode.samp_launcher.core.ServerConfig
+import com.umnicode.samp_launcher.core.ServerResolveCallback
+import com.umnicode.samp_launcher.core.ServerView
+import com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
 
-        <!-- بطاقة الترحيب -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@drawable/card_bg"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
+class HomeFragment : Fragment() {
+    private lateinit var rootView: View
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="مرحباً بك في لانشر السيرفر"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val sharedPreferences: SharedPreferences? = this.context?.getSharedPreferences("HomeFragment", Context.MODE_PRIVATE)
+        val preferencesEditor: SharedPreferences.Editor? = sharedPreferences?.edit()
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="جاهز للعب الآن بأفضل أداء واستقرار"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
-        </LinearLayout>
+        this.rootView = inflater.inflate(R.layout.fragment_home, container, false)
 
-        <!-- أدوات التحكم والاسم -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+        val nicknameText: TextView = this.rootView.findViewById(R.id.nickname)
+        val launcherApplication: LauncherApplication = activity?.application as LauncherApplication
+        nicknameText.text = launcherApplication.userConfig.Nickname
 
-            <EditText
-                android:id="@+id/nickname"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:background="@drawable/input_bg"
-                android:hint="اسم اللاعب (اللقب)"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
-        </LinearLayout>
+        val portEditText: EditText = this.rootView.findViewById(R.id.port)
 
-        <!-- حقول إعدادات الاتصال بالسيرفر -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical">
+        val ipEditText: EditText = this.rootView.findViewById(R.id.ip)
+        val passwordEditText: EditText = this.rootView.findViewById(R.id.password)
 
-            <EditText
-                android:id="@+id/ip"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/input_bg"
-                android:hint="عنوان السيرفر (IP)"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
+        if (sharedPreferences != null) {
+            ipEditText.setText(sharedPreferences.getString(R.id.ip.toString(), ""))
+            portEditText.setText(sharedPreferences.getString(R.id.port.toString(), ""))
+            passwordEditText.setText(sharedPreferences.getString(R.id.password.toString(), ""))
+        }
 
-            <EditText
-                android:id="@+id/port"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/input_bg"
-                android:hint="المنفذ (Port)"
-                android:inputType="number"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
+        ipEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                preferencesEditor?.putString(R.id.ip.toString(), s.toString())
+                preferencesEditor?.apply()
+            }
+            override fun afterTextChanged(s: Editable?) {
+                updateServerConfig()
+            }
+        })
 
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/input_bg"
-                android:hint="كلمة المرور (إن وجدت)"
-                android:inputType="textPassword"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
-        </LinearLayout>
+        portEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                preferencesEditor?.putString(R.id.port.toString(), s.toString())
+                preferencesEditor?.apply()
+            }
+            override fun afterTextChanged(s: Editable?) {
+                updateServerConfig()
+            }
+        })
 
-        <!-- قسم السيرفر الرئيسي -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="السيرفر الرئيسي"
-            android:textColor="#00B6FC"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+        passwordEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                preferencesEditor?.putString(R.id.password.toString(), s.toString())
+                preferencesEditor?.apply()
+            }
+            override fun afterTextChanged(s: Editable?) {
+                updateServerConfig()
+            }
+        })
 
-        <LinearLayout
-            android:id="@+id/server_view"
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/card_bg"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="12dp">
+        val playButton: PlayButton = this.rootView.findViewById(R.id.play_btn) as PlayButton
+        playButton.setOnSAMPLaunchCallback {
+            println("Launch SAMP")
+        }
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        this.updateServerConfig()
+        return this.rootView
+    }
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Las Venturas RP"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold"
-                    android:textSize="15sp" />
+    private fun updateServerConfig() {
+        val ipEdit: EditText = this.rootView.findViewById(R.id.ip)
+        val portEdit: EditText = this.rootView.findViewById(R.id.port)
+        val userConfig = (activity?.application as LauncherApplication).userConfig
 
-                <TextView
-                    android:id="@+id/serverStatusText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="متصل • أونلاين"
-                    android:textColor="#03DAC5"
-                    android:textSize="12sp" />
-            </LinearLayout>
+        val IP: String = ipEdit.text.toString()
+        var port: Int = 0
 
-            <!-- تعديل نوع الزر إلى PlayButton لحل الكراش -->
-            <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
-                android:id="@+id/play_btn"
-                android:layout_width="90dp"
-                android:layout_height="40dp"
-                android:backgroundTint="#00B6FC"
-                android:text="دخول"
-                android:textColor="#000000"
-                android:textStyle="bold" />
-        </LinearLayout>
+        if (portEdit.text.isNotEmpty()) {
+            port = portEdit.text.toString().toInt()
+        }
 
-    </LinearLayout>
-</ScrollView>
+        ServerConfig.Resolve(IP, port, userConfig.PingTimeout, this.context, object : ServerResolveCallback {
+            override fun OnFinish(OutConfig: ServerConfig?) {
+                val serverView: ServerView = rootView.findViewById(R.id.server_view)
+                serverView.SetServer(OutConfig)
+
+                val playButton: PlayButton = rootView.findViewById(R.id.play_btn) as PlayButton
+                playButton.SetServerConfig(OutConfig)
+            }
+
+            override fun OnPingFinish(OutConfig: ServerConfig?) {
+                val serverView: ServerView = rootView.findViewById(R.id.server_view)
+                serverView.SetServer(OutConfig)
+            }
+        })
+    }
+}
