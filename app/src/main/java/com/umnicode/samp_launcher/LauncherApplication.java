@@ -1,8 +1,8 @@
 package com.umnicode.samp_launcher;
 
-import android.Manifest;
-import android.app.Application;
 import android.content.Context;
+import android.app.Application;
+import android.util.Log;
 
 import com.umnicode.samp_launcher.core.SAMP.SAMPInstaller;
 
@@ -11,13 +11,26 @@ public class LauncherApplication extends Application {
     public UserConfig userConfig;
     public SAMPInstaller Installer;
 
-    public void onCreate(){
+    @Override
+    public void onCreate() {
         super.onCreate();
-
-        this._Context = this.getApplicationContext();
-        this.userConfig = new UserConfig(this.getApplicationContext(),
-                                         this.getApplicationContext().getString(R.string.user_config_name));
-
-        this.Installer = new SAMPInstaller(this._Context);
+        
+        try {
+            this._Context = this.getApplicationContext();
+            
+            // محاولة جلب الإعدادات مع حماية من الـ Crash إذا كان الـ String غير موجود
+            String configName = "";
+            try {
+                configName = this._Context.getString(R.string.user_config_name);
+            } catch (Exception e) {
+                configName = "default_config"; // قيمة احتياطية لمنع الانغلاق
+            }
+            
+            this.userConfig = new UserConfig(this._Context, configName);
+            this.Installer = new SAMPInstaller(this._Context);
+            
+        } catch (Exception e) {
+            Log.e("SAMP_CRASH", "Error in LauncherApplication onCreate: ", e);
+        }
     }
 }
