@@ -1,154 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".ui.home.HomeFragment">
+    android:background="#121212"
+    android:padding="16dp">
 
-    <Button
-        android:id="@+id/add_server_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/lato"
-        android:includeFontPadding="false"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:text="@string/add_server_button"
-        app:layout_constraintBottom_toTopOf="@+id/divider2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="0.97" />
-
-    <TextView
-        android:id="@+id/nickname"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:autoText="false"
-        android:gravity="center_horizontal"
-        android:text="- Nickname -"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:orientation="vertical">
 
-    <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
-        android:id="@+id/play_btn"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:fontFamily="@font/lato"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="1.0" />
+        <!-- بطاقة الترحيب بـ سيرفرك الخاص (بدون زر تثبيت) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@drawable/card_bg"
+            android:orientation="vertical"
+            android:padding="16pg"
+            android:gravity="center">
 
-    <EditText
-        android:id="@+id/ip"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:autoText="false"
-        android:ems="10"
-        android:foregroundGravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:hint="@string/server_ip_hint"
-        android:inputType="phone"
-        app:layout_constraintBottom_toTopOf="@+id/port"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="0.97" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="مرحباً بك في سيرفرك المفضل"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
 
-    <EditText
-        android:id="@+id/port"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:foregroundGravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:hint="@string/server_port_hint"
-        android:inputType="numberSigned"
-        app:layout_constraintBottom_toTopOf="@+id/password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="0.97" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="جاهز للعب الان بجودة عالية وأداء مستقر"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp"/>
+        </LinearLayout>
 
-    <EditText
-        android:id="@+id/password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:hint="@string/server_password_hint"
-        android:inputType="textPersonName"
-        android:lineSpacingExtra="2sp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/add_server_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_text"
-        app:layout_constraintVertical_bias="0.97" />
+        <!-- لوحة التحكم السريع بالاسم والإعدادات -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/help"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/help_string"
-        android:textColor="@color/colorNone"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/ip"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="0.97" />
+            <EditText
+                android:id="@+id/editNickname"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_bg"
+                android:hint="اسم اللاعب (Nickname)"
+                android:paddingHorizontal="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:textSize="14sp"/>
+        </LinearLayout>
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname" />
+        <!-- قسم السيرفر الوحيد المخصص -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="السيرفر الرئيسي"
+            android:textColor="#BB86FC"
+            android:textStyle="bold"
+            android:textSize="16sp"/>
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/play_btn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="1.0" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/card_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp">
 
-    <TextView
-        android:id="@+id/welcome_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/welcome"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nickname"
-        app:layout_constraintVertical_bias="0.0" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-    <com.umnicode.samp_launcher.core.ServerView
-        android:id="@+id/server_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/help"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/welcome_text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Las Venturas RP"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/serverStatusText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="متصل • البينغ: 35ms"
+                    android:textColor="#03DAC5"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnPlayServer"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:backgroundTint="#BB86FC"
+                android:text="دخول"
+                android:textColor="#000000"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
