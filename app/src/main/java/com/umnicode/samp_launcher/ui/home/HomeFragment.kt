@@ -80,7 +80,7 @@ class HomeFragment : Fragment() {
         })
 
         val playButton: PlayButton = this.rootView.findViewById(R.id.play_btn) as PlayButton
-        playButton.setOnSAMPLaunchCallback {
+        playButton.SetOnSAMPLaunchCallback {
             println("Launch SAMP")
         }
 
