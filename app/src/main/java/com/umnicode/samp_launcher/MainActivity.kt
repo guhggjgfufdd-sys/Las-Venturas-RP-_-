@@ -29,38 +29,48 @@ class MainActivity : AppCompatActivity() {
         try {
             supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
             supportActionBar?.hide()
-        } catch (e: Exception) {
-            e.printStackTrace()
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error hiding action bar: ${e.message}")
         }
 
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        try {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error setting orientation: ${e.message}")
+        }
 
-        setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        try {
+            setContentView(R.layout.activity_main)
 
-        // Bug fix
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
+            val navView: BottomNavigationView? = findViewById(R.id.nav_view)
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
 
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_settings
-            )
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-
-        // طلب صلاحيات التخزين عند الفتح
-        RequestStoragePermission(object : PermissionRequestCallback {
-            override fun Finished(isGranted: Boolean) {
-                if (isGranted) {
-                    Log.i("Permissions", "Storage permissions granted successfully.")
-                } else {
-                    Log.w("Permissions", "Storage permissions denied by user.")
-                }
+            if (navHostFragment != null && navView != null) {
+                val navController = navHostFragment.navController
+                val appBarConfiguration = AppBarConfiguration(
+                    setOf(R.id.navigation_home, R.id.navigation_settings)
+                )
+                setupActionBarWithNavController(navController, appBarConfiguration)
+                navView.setupWithNavController(navController)
             }
-        })
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error initializing views/navigation: ${e.message}")
+        }
+
+        // طلب الصلاحيات بأمان عند بدء التشغيل
+        try {
+            RequestStoragePermission(object : PermissionRequestCallback {
+                override fun Finished(isGranted: Boolean) {
+                    if (isGranted) {
+                        Log.i("Permissions", "Storage permissions granted.")
+                    } else {
+                        Log.w("Permissions", "Storage permissions denied.")
+                    }
+                }
+            })
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error requesting permissions: ${e.message}")
+        }
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -68,9 +78,10 @@ class MainActivity : AppCompatActivity() {
 
         if (hasFocus) {
             try {
-                (this.applicationContext as LauncherApplication).Installer.ReCheckInstallResources(this)
-            } catch (e: Exception) {
-                Log.e("LauncherApplication", "Error in ReCheckInstallResources: " + e.message)
+                val app = applicationContext as? LauncherApplication
+                app?.Installer?.ReCheckInstallResources(this)
+            } catch (e: Throwable) {
+                Log.e("LauncherApplication", "Error in ReCheckInstallResources: ${e.message}")
             }
         }
     }
@@ -83,36 +94,44 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun RequestPermission(Permission: String, Callback: PermissionRequestCallback) {
-        if (ActivityCompat.checkSelfPermission(this, Permission) == PackageManager.PERMISSION_GRANTED) {
-            Callback.Finished(true)
-            return
-        }
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Permission) == PackageManager.PERMISSION_GRANTED) {
+                Callback.Finished(true)
+                return
+            }
 
-        val PermissionReq: PermissionRequest? = this.FindPermissionRequest(Permission)
+            val PermissionReq: PermissionRequest? = this.FindPermissionRequest(Permission)
 
-        if (PermissionReq != null) {
-            PermissionReq.Callbacks.add(Callback)
-        } else {
-            this.PermissionRequests.add(PermissionRequest(Permission, mutableListOf(Callback)))
-            ActivityCompat.requestPermissions(this, arrayOf(Permission), this.PermissionRequestID)
-            this.PermissionRequestID++
+            if (PermissionReq != null) {
+                PermissionReq.Callbacks.add(Callback)
+            } else {
+                this.PermissionRequests.add(PermissionRequest(Permission, mutableListOf(Callback)))
+                ActivityCompat.requestPermissions(this, arrayOf(Permission), this.PermissionRequestID)
+                this.PermissionRequestID++
+            }
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error in RequestPermission: ${e.message}")
+            Callback.Finished(false)
         }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        for (i in permissions.indices) {
-            for (Index in PermissionRequests.indices) {
-                if (PermissionRequests[Index].Permission == permissions[i]) {
-                    for (Callback in PermissionRequests[Index].Callbacks) {
-                        Callback.Finished(grantResults[i] == PackageManager.PERMISSION_GRANTED)
+        try {
+            for (i in permissions.indices) {
+                for (Index in PermissionRequests.indices) {
+                    if (PermissionRequests[Index].Permission == permissions[i]) {
+                        for (Callback in PermissionRequests[Index].Callbacks) {
+                            Callback.Finished(grantResults[i] == PackageManager.PERMISSION_GRANTED)
+                        }
+                        this.PermissionRequests.removeAt(Index)
+                        break
                     }
-
-                    this.PermissionRequests.removeAt(Index)
-                    break
                 }
             }
+        } catch (e: Throwable) {
+            Log.e("MainActivity", "Error in onRequestPermissionsResult: ${e.message}")
         }
     }
 
