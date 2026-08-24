@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.umnicode.samp_launcher"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 29
         versionCode 1
         versionName "0.1"
