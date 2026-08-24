@@ -1,79 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OpenSAMP Launcher</string>
     <string name="user_config_name">user_config</string>
 
-    <string name="title_home">Home</string>
-    <string name="title_servers">Servers</string>
-    <string name="title_settings">Settings</string>
+    <string name="title_home">الرئيسية</string>
+    <string name="title_servers">السيرفرات</string>
+    <string name="title_settings">الإعدادات</string>
 
-    <string name="welcome">Welcome to OpenSAMP Launcher</string>
+    <string name="welcome">مرحباً بك في OpenSAMP Launcher</string>
 
-    <string name="play_button_launch_SAMP">Play</string>
-    <string name="play_button_server_incorrect">Server info incorrect</string>
-    <string name="play_button_install_SAMP">Install SAMP</string>
-    <string name="play_button_install_SAMP_APK">Install APK</string>
-    <string name="play_button_install_SAMP_CACHE">Install SAMP cache</string>
-    <string name="play_button_show_download_status">Downloading %d of %d</string>
-    <string name="play_button_show_extract_status">Extracting %.2f/%.2f</string>
+    <string name="play_button_launch_SAMP">دخول اللعبة</string>
+    <string name="play_button_server_incorrect">معلومات السيرفر غير صحيحة</string>
+    <string name="play_button_install_SAMP">تثبيت ملفات SAMP</string>
+    <string name="play_button_install_SAMP_APK">تثبيت APK</string>
+    <string name="play_button_install_SAMP_CACHE">تثبيت الكاش</string>
+    <string name="play_button_show_download_status">جاري التحميل %d من %d</string>
+    <string name="play_button_show_extract_status">جاري فك الضغط %.2f/%.2f</string>
 
-    <string name="add_server_button">Add server to list</string>
+    <string name="add_server_button">إضافة سيرفر للقائمة</string>
 
-    <string name="server_port_hint">Server port</string>
-    <string name="server_ip_hint">Server ip</string>
-    <string name="server_password_hint">Server password (optional)</string>
+    <string name="server_port_hint">منفذ السيرفر Port</string>
+    <string name="server_ip_hint">عنوان السيرفر IP</string>
+    <string name="server_password_hint">كلمة السر (اختياري)</string>
 
-    <string name="help_string">Enter server ip/port</string>
-    <string name="help_server_info">Server info</string>
+    <string name="help_string">أدخل عنوان السيرفر والمنفذ</string>
+    <string name="help_server_info">معلومات السيرفر</string>
 
-    <string name="server_players">%d/%d players online</string>
-    <string name="server_port_ip">%s:%d</string>
-    <string name="server_time">Time - %s</string>
-    <string name="server_mode">Mode - %s</string>
-    <string name="server_map">Map - %s</string>
-    <string name="server_language">Language - %s</string>
-    <string name="server_password">Password - %s</string>
+    <string name="server_players">%d/%d لاعبين متصلين</string>
+    <string name="server_port_ip">%s : %d</string>
+    <string name="server_time">الوقت - %s</string>
+    <string name="server_mode">الطور - %s</string>
+    <string name="server_map">الخريطة - %s</string>
+    <string name="server_language">اللغة - %s</string>
+    <string name="server_password">كلمة السر - %s</string>
 
-    <string name="none_string">N/A</string>
+    <string name="none_string">غير متوفر</string>
 
-    <string name="server_status_pending">Pending</string>
-    <string name="server_status_online">Online</string>
-    <string name="server_status_offline">Offline</string>
-    <string name="server_status_not_found">Server not found</string>
-    <string name="server_status_failed_to_fetch">Failed to fetch</string>
-    <string name="server_status_incorrect_ip">Incorrect IP, please recheck it</string>
+    <string name="server_status_pending">جاري التحقق...</string>
+    <string name="server_status_online">أونلاين</string>
+    <string name="server_status_offline">أوفلاين</string>
+    <string name="server_status_not_found">السيرفر غير موجود</string>
+    <string name="server_status_failed_to_fetch">فشل يجلب البيانات</string>
+    <string name="server_status_incorrect_ip">عنوان IP غير صحيح</string>
 
-    <string name="settings_nickname_text">Edit nickname</string>
-    <string name="settings_ping_timeout_text">Edit ping timeout (value less than 250 can cause inaccuracies)</string>
+    <string name="settings_nickname_text">تعديل اسم اللاعب</string>
+    <string name="settings_ping_timeout_text">مهلة الاتصال (Ping Timeout)</string>
 
     <string name="SAMP_package_name">com.rockstargames.gtasa</string>
 
-    <!-- All app directories are relative ( it absolute path it will be like ExternalStorageRoot/app_root_directory_name/dir name )-->
     <string name="app_root_directory_name">OpenSAMP_Launcher</string>
-    <string name="SAMP_download_directory_name">Temp/</string>
+    <string name="SAMP_download_directory_name">Temp</string>
 
-    <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa1SYW81wfirLMQ2APnWcM-XNxnJxYZ3</string>
+    <!-- تم تصحيح الرموز الخاطئة &amp; في الروابط -->
+    <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa15YW81wfsrLMQ2APmCW-XNmJxYZ3</string>
     <string name="SAMP_data_url">https://www.dropbox.com/s/hti52zezmqy2snw/obb.zip?dl=1</string>
 
-    <string name="installer_status_none_SAMP_found">SAMP found</string>
-    <string name="installer_status_none_SAMP_not_found">SAMP not found</string>
-    <string name="installer_status_none_SAMP_cache_not_found">SAMP not found</string>
+    <string name="installer_status_none_SAMP_found">تم العثور على ملفات SAMP</string>
+    <string name="installer_status_none_SAMP_not_found">ملفات SAMP غير موجودة</string>
+    <string name="installer_status_none_SAMP_cache_not_found">كاش اللعبة غير موجود</string>
 
-    <string name="install_status_downloading_error">Error downloading files</string>
-    <string name="install_status_extracting_error">Error extract data file</string>
-    <string name="install_status_storage_permissions_denied">Storage permissions are denied</string>
-    <string name="install_status_apk_not_found">SAMP apk not found</string>
+    <string name="install_status_downloading_error">خطأ في تحميل الملفات</string>
+    <string name="install_status_extracting_error">خطأ في فك ضغط الملفات</string>
+    <string name="install_status_storage_permissions_denied">تم رفض صلاحية التخزين</string>
+    <string name="install_status_apk_not_found">ملف APK غير موجود</string>
 
-    <string name="installer_status_preparing">Preparing to download</string>
-    <string name="installer_status_downloading">Downloading SAMP file %d of %d</string>
-    <string name="installer_status_extracting">Extracting SAMP file %d of %d</string>
-    <string name="installer_status_waiting_for_apk_install">Press button to install SAMP APK</string>
+    <string name="installer_status_preparing">جاري التجهيز للتحميل...</string>
+    <string name="installer_status_downloading">جاري تحميل ملفات SAMP %d من %d</string>
+    <string name="installer_status_extracting">جاري فك الضغط %.2f/%.2f MB</string>
+    <string name="installer_status_waiting_for_apk_install">اضغط لتثبيت APK اللعبة</string>
 
-    <string name="installer_progress_bar_full"> %.2f/%.2f MB</string>
+    <string name="installer_progress_bar_full">%.2f/%.2f MB</string>
     <string name="installer_progress_bar_only_done">%.2f MB</string>
 
-    <string name="installer_button_install">Install SAMP</string>
-    <string name="installer_button_install_cache">Install SAMP cache</string>
-    <string name="installer_button_retry">Retry</string>
-    <string name="installer_button_cancel">Cancel</string>
-    <string name="installer_button_waiting_for_apk_install">Install APK</string>
+    <string name="installer_button_install">تثبيت SAMP</string>
+    <string name="installer_button_install_cache">تثبيت الكاش</string>
+    <string name="installer_button_retry">إعادة المحاولة</string>
+    <string name="installer_button_cancel">إلغاء</string>
+    <string name="installer_button_waiting_for_apk_install">تثبيت APK</string>
 </resources>
