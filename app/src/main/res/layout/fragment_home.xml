@@ -16,7 +16,7 @@
             android:layout_height="130dp"
             android:background="@drawable/card_bg"
             android:orientation="vertical"
-            android:padding="16pg"
+            android:padding="16dp"
             android:gravity="center">
 
             <TextView
