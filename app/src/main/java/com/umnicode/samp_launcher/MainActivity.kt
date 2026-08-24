@@ -15,10 +15,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-interface PermissionRequestCallback {
-    fun Finished(isGranted: Boolean)
-}
-
 class PermissionRequest(val Permission: String, var Callbacks: MutableList<PermissionRequestCallback>)
 
 class MainActivity : AppCompatActivity() {
@@ -46,8 +42,6 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // Passing each menu ID as a set of IDs because each
-        // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_settings
@@ -57,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        // **التعديل الهجومي لمنع الكراش:** طلب صلاحيات التخزين فور فتح التطبيق
+        // طلب صلاحيات التخزين عند الفتح
         RequestStoragePermission(object : PermissionRequestCallback {
             override fun Finished(isGranted: Boolean) {
                 if (isGranted) {
@@ -69,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    // When we move app to background, we can for example remove dirs or install game APK ( it's undefined behavior, but works)
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
@@ -82,9 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Permission manager system
     private fun FindPermissionRequest(Permission: String): PermissionRequest? {
-        // Simple search for permission
         for (LPermission in this.PermissionRequests) {
             if (LPermission.Permission == Permission) return LPermission
         }
@@ -92,7 +83,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun RequestPermission(Permission: String, Callback: PermissionRequestCallback) {
-        // Check does this permission was already granted
         if (ActivityCompat.checkSelfPermission(this, Permission) == PackageManager.PERMISSION_GRANTED) {
             Callback.Finished(true)
             return
@@ -100,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
         val PermissionReq: PermissionRequest? = this.FindPermissionRequest(Permission)
 
-        if (PermissionReq != null) { // If permission request exist - add current callback to list
+        if (PermissionReq != null) {
             PermissionReq.Callbacks.add(Callback)
         } else {
             this.PermissionRequests.add(PermissionRequest(Permission, mutableListOf(Callback)))
@@ -112,16 +102,13 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        // requestCode of PermissionRequestSystem
         for (i in permissions.indices) {
             for (Index in PermissionRequests.indices) {
                 if (PermissionRequests[Index].Permission == permissions[i]) {
-                    // Notify all listeners
                     for (Callback in PermissionRequests[Index].Callbacks) {
                         Callback.Finished(grantResults[i] == PackageManager.PERMISSION_GRANTED)
                     }
 
-                    // Remove request from array
                     this.PermissionRequests.removeAt(Index)
                     break
                 }
@@ -129,7 +116,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Top level permissions API:
     fun RequestStoragePermission(Callback: PermissionRequestCallback) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             this.RequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionRequestCallback {
