@@ -3,28 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0D0D14"
-    android:padding="16dp">
+    android:padding="14dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- هيدر اللوقو -->
+        <!-- هيدر -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingBottom="16dp">
+            android:paddingBottom="14dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Las Venturas RP"
-                android:textColor="#FFFFFF"
-                android:textSize="22sp"
-                android:textStyle="bold" />
+                android:text="v1.0"
+                android:textColor="#666666"
+                android:textSize="11sp" />
 
             <View
                 android:layout_width="0dp"
@@ -34,129 +33,141 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="v1.0"
-                android:textColor="#777777"
-                android:textSize="12sp" />
+                android:text="Las Venturas RP"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- بانر ترحيبي -->
+        <!-- البانر الرئيسي -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="140dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/banner_gradient_bg"
-            android:orientation="vertical"
-            android:padding="18dp"
-            android:gravity="center_vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="مرحباً بك في Las Venturas RP"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="مرحباً بك في Las Venturas RP"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="تجربة رول بلاي احترافية بأداء مستقر"
+                    android:textColor="#D0D0FF"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
+                android:id="@+id/play_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:minWidth="120dp"
+                android:background="#3D2E7D"
+                android:paddingHorizontal="16dp"
+                android:text="دخول اللعبة"
                 android:textColor="#FFFFFF"
-                android:textSize="19sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="تجربة رول بلاي احترافية بأداء مستقر"
-                android:textColor="#D0D0FF"
+                android:textStyle="bold"
                 android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- بطاقة اسم اللاعب -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card_bg"
-            android:orientation="vertical"
-            android:padding="14dp"
-            android:layout_marginTop="14dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="اسم المستخدم الخاص بك"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/nickname"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/input_bg"
-                android:hint="أدخل اسمك هنا"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/input_bg"
-                android:hint="كلمة السر (إن وجدت)"
-                android:inputType="textPassword"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#666666"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <!-- ⚠️ حقول IP/Port مخفية بس موجودة بالكود (يعبيها الكود تلقائيًا، المستخدم ما يشوفها) -->
-        <EditText
-            android:id="@+id/ip"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/port"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
-        <!-- بطاقة السيرفر الرئيسي -->
+        <!-- لوحات الوصول السريع -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="السيرفر الرسمي"
-            android:textColor="#8C7BFF"
-            android:textStyle="bold"
-            android:textSize="15sp" />
+            android:layout_marginTop="18dp"
+            android:text="لوحات الوصول السريع"
+            android:textColor="#888888"
+            android:textSize="12sp" />
 
-        <com.umnicode.samp_launcher.core.ServerView
-            android:id="@+id/server_view"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/card_bg"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="14dp" />
-
-        <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
-            android:id="@+id/play_btn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/button_gradient_bg"
-            android:text="دخول اللعبة"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            android:textSize="15sp" />
-
-        <!-- روابط سريعة -->
+        <!-- الصف الأول: الاسم + الأداء -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="8dp">
+
+            <!-- بطاقة اسم اللاعب -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="اسم المستخدم"
+                    android:textColor="#888888"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/nickname"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/input_bg"
+                    android:hint="اسمك هنا"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#666666"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- بطاقة الأداء -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:layout_marginStart="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="كلمة السر"
+                    android:textColor="#888888"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/input_bg"
+                    android:hint="إن وجدت"
+                    android:inputType="textPassword"
+                    android:paddingHorizontal="10dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#666666"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- الصف الثاني: ديسكورد + تحديثات -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -170,7 +181,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="الديسكورد"
+                    android:text="مجتمع السيرفر"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:textSize="13sp" />
@@ -179,8 +190,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="انضم لمجتمعنا"
-                    android:textColor="#888888"
+                    android:text="انضم للديسكورد"
+                    android:textColor="#8C7BFF"
                     android:textSize="11sp" />
             </LinearLayout>
 
@@ -210,6 +221,39 @@
                     android:textSize="11sp" />
             </LinearLayout>
         </LinearLayout>
+
+        <!-- السيرفر الرسمي -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="السيرفر الرسمي"
+            android:textColor="#8C7BFF"
+            android:textStyle="bold"
+            android:textSize="14sp" />
+
+        <com.umnicode.samp_launcher.core.ServerView
+            android:id="@+id/server_view"
+            android:layout_width="match_parent"
+            android:layout_height="95dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/card_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="14dp" />
+
+        <!-- حقول IP/Port مخفية (مثبتة على سيرفرك بالكود) -->
+        <EditText
+            android:id="@+id/ip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/port"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
 
     </LinearLayout>
 </ScrollView>
