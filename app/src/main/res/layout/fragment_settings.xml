@@ -1,68 +1,637 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.settings.SettingsFragment">
+    android:background="@color/bg_dark"
+    android:orientation="vertical">
 
+    <!-- ====== الهيدر ====== -->
     <LinearLayout
-        android:id="@+id/settings_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
 
-        <Space
-            android:id="@+id/settings_top_spacer"
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
-        <TextView
-            android:id="@+id/edit_nickname_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/settings_nickname_text"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/nickname_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:inputType="textPersonName" />
-
-        <Space
-            android:id="@+id/settings_nickname_spacer"
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/bg_circle_purple"
+            android:src="@android:drawable/ic_media_rew"
+            app:tint="@color/text_white"
+            android:padding="10dp"/>
 
         <TextView
-            android:id="@+id/edit_ping_timeout_text"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/settings_ping_timeout_text"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/ping_timeout_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:gravity="center_horizontal"
-            android:inputType="numberSigned" />
-
-        <Space
-            android:id="@+id/settings_ping_timeout_spacer"
-            android:layout_width="match_parent"
-            android:layout_height="8dp" />
-
-        <com.umnicode.samp_launcher.ui.widgets.SAMP_InstallerView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+            android:layout_weight="1"
+            android:text="الإعدادات"
+            android:textColor="@color/text_white"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginEnd="40dp"/>
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- ====== قسم عام ====== -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="عام"
+                        android:textColor="@color/purple_primary"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:gravity="end"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- اللغة -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_sort_alphabetically"
+                            app:tint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="اللغة"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تغيير لغة التطبيق"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_language"
+                            android:layout_width="110dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_dropdown"
+                            android:popupBackground="@color/card_dark_light"/>
+                    </LinearLayout>
+
+                    <!-- السمة -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_view"
+                            app:tint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="السمة"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تغيير مظهر التطبيق"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_theme"
+                            android:layout_width="110dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_dropdown"
+                            android:popupBackground="@color/card_dark_light"/>
+                    </LinearLayout>
+
+                    <!-- تشغيل عند بدء النظام -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_autostart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            app:thumbTint="@color/text_white"
+                            app:trackTint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="end"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تشغيل عند بدء النظام"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تشغيل اللانشر عند تشغيل الجهاز"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- تقليل لشريط المهام -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_minimize_tray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            app:thumbTint="@color/text_white"
+                            app:trackTint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="end"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تقليل إلى شريط المهام"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تقليل اللانشر إلى شريط المهام عند الإغلاق"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ====== قسم الجرافيك ====== -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="الجرافيك"
+                        android:textColor="@color/purple_primary"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:gravity="end"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- الدقة -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_crop"
+                            app:tint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="الدقة"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تحديد دقة اللعبة"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_resolution"
+                            android:layout_width="140dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_dropdown"
+                            android:popupBackground="@color/card_dark_light"/>
+                    </LinearLayout>
+
+                    <!-- جودة الرسومات -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_gallery"
+                            app:tint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="جودة الرسومات"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تحديد جودة الرسومات"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_quality"
+                            android:layout_width="110dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_dropdown"
+                            android:popupBackground="@color/card_dark_light"/>
+                    </LinearLayout>
+
+                    <!-- معدل الإطارات -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_slideshow"
+                            app:tint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="معدل الإطارات"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تحديد معدل الإطارات"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+
+                        <Spinner
+                            android:id="@+id/spinner_fps"
+                            android:layout_width="110dp"
+                            android:layout_height="38dp"
+                            android:background="@drawable/bg_dropdown"
+                            android:popupBackground="@color/card_dark_light"/>
+                    </LinearLayout>
+
+                    <!-- V-Sync -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_vsync"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            app:thumbTint="@color/text_white"
+                            app:trackTint="@color/purple_primary"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="end"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="مزامنة رأسية (V-Sync)"
+                                android:textColor="@color/text_white"
+                                android:textSize="14sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="تقليل تمزق الشاشة"
+                                android:textColor="@color/text_gray"
+                                android:textSize="11sp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ====== قسم الصوت ====== -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="الصوت"
+                        android:textColor="@color/purple_primary"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:gravity="end"
+                        android:layout_marginBottom="16dp"/>
+
+                    <!-- صوت رئيسي -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_lock_silent_mode_off"
+                            app:tint="@color/purple_primary"/>
+
+                        <SeekBar
+                            android:id="@+id/seek_master_volume"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="10dp"
+                            android:max="100"
+                            android:progress="80"
+                            android:progressTint="@color/purple_primary"
+                            android:thumbTint="@color/purple_primary"/>
+
+                        <TextView
+                            android:id="@+id/tv_master_volume"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:text="80%"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <!-- الموسيقى -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="14dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_media_play"
+                            app:tint="@color/purple_primary"/>
+
+                        <SeekBar
+                            android:id="@+id/seek_music_volume"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="10dp"
+                            android:max="100"
+                            android:progress="60"
+                            android:progressTint="@color/purple_primary"
+                            android:thumbTint="@color/purple_primary"/>
+
+                        <TextView
+                            android:id="@+id/tv_music_volume"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:text="60%"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <!-- المؤثرات -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_lock_silent_mode"
+                            app:tint="@color/purple_primary"/>
+
+                        <SeekBar
+                            android:id="@+id/seek_effects_volume"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginHorizontal="10dp"
+                            android:max="100"
+                            android:progress="70"
+                            android:progressTint="@color/purple_primary"
+                            android:thumbTint="@color/purple_primary"/>
+
+                        <TextView
+                            android:id="@+id/tv_effects_volume"
+                            android:layout_width="36dp"
+                            android:layout_height="wrap_content"
+                            android:text="70%"
+                            android:textColor="@color/text_white"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <!-- الجهاز الصوتي -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_audio_device"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Speakers (Realtek High Definition)"
+                            android:textColor="@color/text_white"
+                            android:textSize="11sp"
+                            android:textAllCaps="false"
+                            app:backgroundTint="@color/card_dark_light"
+                            app:cornerRadius="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="الجهاز الصوتي"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp"
+                            android:layout_marginStart="12dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ====== أزرار أسفل الشاشة ====== -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_reset"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="إعادة تعيين الإعدادات"
+            android:textColor="@color/danger_red"
+            android:textSize="13sp"
+            app:strokeColor="@color/danger_red"
+            app:strokeWidth="1dp"
+            app:cornerRadius="14dp"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="حفظ التغييرات"
+            android:textColor="@color/text_white"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            app:backgroundTint="@color/purple_primary"
+            app:cornerRadius="14dp"/>
+    </LinearLayout>
+
+</LinearLayout>
