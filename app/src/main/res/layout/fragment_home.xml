@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#121212"
+    android:background="#0D0D14"
     android:padding="16dp">
 
     <LinearLayout
@@ -10,126 +10,206 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- بطاقة الترحيب -->
+        <!-- هيدر اللوقو -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="130dp"
-            android:background="@drawable/card_bg"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="مرحباً بك في سيرفرك المفضل"
+                android:text="Las Venturas RP"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="v1.0"
+                android:textColor="#777777"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- بانر ترحيبي -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="@drawable/banner_gradient_bg"
+            android:orientation="vertical"
+            android:padding="18dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="مرحباً بك في Las Venturas RP"
+                android:textColor="#FFFFFF"
+                android:textSize="19sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="جاهز للعب الآن بجودة عالية وأداء مستقر"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
+                android:layout_marginTop="6dp"
+                android:text="تجربة رول بلاي احترافية بأداء مستقر"
+                android:textColor="#D0D0FF"
+                android:textSize="13sp" />
         </LinearLayout>
 
-        <!-- أدوات التحكم والاسم -->
+        <!-- بطاقة اسم اللاعب -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
+            android:background="@drawable/card_bg"
+            android:orientation="vertical"
+            android:padding="14dp"
+            android:layout_marginTop="14dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="اسم المستخدم الخاص بك"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/nickname"
-                android:layout_width="0dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:background="@drawable/input_bg"
-                android:hint="اسم اللاعب (Nickname)"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
-        </LinearLayout>
-
-        <!-- حقول الاتصال -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/ip"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:background="@drawable/input_bg"
-                android:hint="IP العنوان"
-                android:paddingHorizontal="12dp"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/port"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/input_bg"
-                android:hint="المنفذ Port"
-                android:inputType="number"
+                android:hint="أدخل اسمك هنا"
                 android:paddingHorizontal="12dp"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
+                android:textColorHint="#666666"
                 android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/password"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/input_bg"
                 android:hint="كلمة السر (إن وجدت)"
                 android:inputType="textPassword"
                 android:paddingHorizontal="12dp"
                 android:textColor="#FFFFFF"
-                android:textColorHint="#777777"
+                android:textColorHint="#666666"
                 android:textSize="14sp" />
         </LinearLayout>
 
-        <!-- قسم السيرفر الرئيسي -->
+        <!-- ⚠️ حقول IP/Port مخفية بس موجودة بالكود (يعبيها الكود تلقائيًا، المستخدم ما يشوفها) -->
+        <EditText
+            android:id="@+id/ip"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/port"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+
+        <!-- بطاقة السيرفر الرئيسي -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="السيرفر الرئيسي"
-            android:textColor="#00B6FC"
+            android:text="السيرفر الرسمي"
+            android:textColor="#8C7BFF"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <com.umnicode.samp_launcher.core.ServerView
             android:id="@+id/server_view"
             android:layout_width="match_parent"
-            android:layout_height="90dp"
+            android:layout_height="100dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/card_bg"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="12dp" />
+            android:padding="14dp" />
 
         <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
             android:id="@+id/play_btn"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:layout_marginTop="16dp"
-            android:backgroundTint="#00B6FC"
-            android:text="دخول"
-            android:textColor="#000000"
-            android:textStyle="bold" />
+            android:background="@drawable/button_gradient_bg"
+            android:text="دخول اللعبة"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="15sp" />
+
+        <!-- روابط سريعة -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:layout_marginEnd="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="الديسكورد"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="انضم لمجتمعنا"
+                    android:textColor="#888888"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/card_bg"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:layout_marginStart="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="آخر التحديثات"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="تابع الجديد بالسيرفر"
+                    android:textColor="#888888"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>
