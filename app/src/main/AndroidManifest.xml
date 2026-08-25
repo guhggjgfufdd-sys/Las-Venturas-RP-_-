@@ -3,18 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.umnicode.samp_launcher">
 
-    <!-- أذونات الشبكة والإنترنت -->
+    <!-- أدوات الشبكة والإنترنت -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- أذونات الوصول للتخزين والملفات -->
+    <!-- أدوات الوصول للتخزين والملفات -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
-    <!-- إذن تثبيت ملفات APK الخاصة باللعبة -->
+    <!-- الخاصة بتثبيت APK إن كانت ملفات -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
@@ -29,7 +28,7 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
-        <!-- مزود الملفات لتثبيت الـ APK والتحديثات -->
+        <!-- والتحذيرات APK مزود الملفات لتثبيت الـ -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -40,7 +39,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <!-- الشاشة الرئيسية للانشر -->
+        <!-- الشاشة الرئيسية لللانشر -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
