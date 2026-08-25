@@ -196,7 +196,7 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                // التعديل الجذري: استخدام مجلد التطبيق الخاص لتفادي مشكلة الـ Permission Denied نهائياً
+                // التخزين في المجلد الخاص بالتطبيق لتفادي رفض الصلاحيات (Permission Denied)
                 val targetDir = requireContext().getExternalFilesDir(null) ?: requireContext().filesDir
                 if (!targetDir.exists()) targetDir.mkdirs()
                 val zipFile = File(targetDir, "samp_cache_pro.zip")
@@ -303,23 +303,38 @@ class HomeFragment : Fragment() {
     private fun joinServer() {
         try {
             val pm = requireActivity().packageManager
-            val intent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
-            if (intent != null) {
-                intent.putExtra("ip", SERVER_IP)
-                intent.putExtra("port", SERVER_PORT)
-                startActivity(intent)
+            
+            // 1. المحاولة الأولى: فتح حزمة GTA SA المباشرة
+            val launchIntent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
+            if (launchIntent != null) {
+                launchIntent.putExtra("ip", SERVER_IP)
+                launchIntent.putExtra("port", SERVER_PORT)
+                startActivity(launchIntent)
                 Toast.makeText(context, "🎮 جاري الدخول إلى السيرفر...", Toast.LENGTH_SHORT).show()
-            } else {
-                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
-                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
-                if (browserIntent.resolveActivity(pm) != null) {
-                    startActivity(browserIntent)
-                } else {
-                    Toast.makeText(context, "⚠️ يرجى التأكد من تثبيت مشغل اللعبة", Toast.LENGTH_LONG).show()
-                }
+                return
             }
+
+            // 2. المحاولة الثانية: تشغيل عبر بروتوكول samp://
+            val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
+            val sampIntent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl)).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            
+            if (sampIntent.resolveActivity(pm) != null) {
+                startActivity(sampIntent)
+                Toast.makeText(context, "🎮 جاري فتح المشغل...", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // 3. تنبيه المستخدم في حال عدم التثبيت
+            AlertDialog.Builder(requireContext())
+                .setTitle("⚠️ مشغل اللعبة غير متاح")
+                .setMessage("لم يتم العثور على لعبة GTA SA مثبتة على جهازك ($SAMP_PACKAGE).\nيرجى تثبيت اللعبة أولاً لتمكن من الدخول.")
+                .setPositiveButton("حسناً", null)
+                .show()
+
         } catch (e: Exception) {
-            Toast.makeText(context, "تعذر الدخول: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "خطأ أثناء التشغيل: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 
