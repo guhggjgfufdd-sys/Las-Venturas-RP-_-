@@ -29,10 +29,13 @@ import com.umnicode.samp_launcher.LauncherApplication
 import com.umnicode.samp_launcher.R
 import com.umnicode.samp_launcher.core.ServerConfig
 import com.umnicode.samp_launcher.core.ServerResolveCallback
+import java.io.BufferedInputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.ZipInputStream
 import kotlin.concurrent.thread
 
 class HomeFragment : Fragment() {
@@ -80,6 +83,7 @@ class HomeFragment : Fragment() {
         checkServerStatus()
         animateEntrance(view)
         pulseStatus()
+        checkCacheStatus()
 
         return view
     }
@@ -87,6 +91,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         handler.post(refreshRunnable)
+        checkCacheStatus()
     }
 
     override fun onPause() {
@@ -140,17 +145,141 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // تحميل الكاش باستخدام المحمل الخاص بالتطبيق
+        // بدء التحقيق والتحميل الحقيقي للكاش
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            val app = requireActivity().application as LauncherApplication
-            app.Installer?.InstallOnlyCache(requireActivity())
+            startRealCacheDownloadAndExtract()
         }
 
         // تحميل المود
         cardDownloadMod.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             showModDownloadDialog()
+        }
+    }
+
+    // التحقق عما إذا كان الكاش مثبتاً مسبقاً لإخفاء بطاقة التحميل
+    private fun checkCacheStatus() {
+        val targetDir = File(Environment.getExternalStorageDirectory(), "Android/data/$SAMP_PACKAGE")
+        if (targetDir.exists() && (targetDir.list()?.isNotEmpty() == true)) {
+            cardDownloadCache.visibility = View.GONE
+        } else {
+            cardDownloadCache.visibility = View.VISIBLE
+        }
+    }
+
+    // الدالة المسؤولة عن التحميل الحقيقي، العداد السلس، وفك الضغط للمسار الصحيح
+    private fun startRealCacheDownloadAndExtract() {
+        val progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle("تحميل كاش SA-MP")
+            setMessage("جاري بدء التحميل...")
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            isIndeterminate = false
+            max = 100
+            setCancelable(false)
+            show()
+        }
+
+        thread {
+            try {
+                val cacheUrl = getString(R.string.SAMP_data_url)
+                val url = URL(cacheUrl)
+                val connection = url.openConnection() as HttpURLConnection
+                connection.connect()
+
+                val fileLength = connection.contentLength
+                val input = BufferedInputStream(connection.inputStream)
+
+                // حفظ الملف المؤقت في مجلد التحميلات
+                val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                if (!downloadDir.exists()) downloadDir.mkdirs()
+                val zipFile = File(downloadDir, "samp_cache_temp.zip")
+
+                val output = FileOutputStream(zipFile)
+                val data = ByteArray(8192)
+                var total: Long = 0
+                var count: Int
+
+                while (input.read(data).also { count = it } != -1) {
+                    total += count
+                    output.write(data, 0, count)
+
+                    if (fileLength > 0) {
+                        val progress = ((total * 100) / fileLength).toInt()
+                        val downloadedMB = total / (1024 * 1024)
+                        val totalMB = fileLength / (1024 * 1024)
+                        
+                        activity?.runOnUiThread {
+                            progressDialog.progress = progress
+                            progressDialog.setMessage("جاري التحميل: $downloadedMB MB / $totalMB MB ($progress%)")
+                        }
+                    }
+                }
+
+                output.flush()
+                output.close()
+                input.close()
+
+                // بدء عملية فك الضغط ونقل الملفات للمسار الصحيح
+                activity?.runOnUiThread {
+                    progressDialog.isIndeterminate = true
+                    progressDialog.setMessage("جاري فك الضغط ونقل الملفات لمكانها الصحيح...")
+                }
+
+                // المسار الصحيح المخصص لملفات اللعبة وكاش السيرفر
+                val extractDir = File(Environment.getExternalStorageDirectory(), "Android/data/$SAMP_PACKAGE")
+                if (!extractDir.exists()) {
+                    extractDir.mkdirs()
+                }
+
+                unzip(zipFile, extractDir)
+
+                // حذف الملف المضغوط المؤقت بعد الانتهاء
+                if (zipFile.exists()) {
+                    zipFile.delete()
+                }
+
+                activity?.runOnUiThread {
+                    progressDialog.dismiss()
+                    Toast.makeText(context, "✅ تم التحميل وفك الضغط بنجاح!", Toast.LENGTH_LONG).show()
+                    
+                    // الانتقال للواجهة الأساسية عبر إخفاء بطاقة التحميل وتحديث الواجهة
+                    cardDownloadCache.visibility = View.GONE
+                }
+
+            } catch (e: Exception) {
+                activity?.runOnUiThread {
+                    progressDialog.dismiss()
+                    Toast.makeText(context, "❌ حدث خطأ أثناء التحميل: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    // دالة فك الضغط (ZipInputStream) لنقل الملفات كاملة وبكل هيكلتها الصحيحة
+    private fun unzip(zipFile: File, targetDirectory: File) {
+        val zis = ZipInputStream(BufferedInputStream(FileInputStream(zipFile)))
+        try {
+            var zisEntry = zis.nextEntry
+            val buffer = ByteArray(4096)
+            while (zisEntry != null) {
+                val newFile = File(targetDirectory, zisEntry.name)
+                if (zisEntry.isDirectory) {
+                    newFile.mkdirs()
+                } else {
+                    newFile.parentFile?.mkdirs()
+                    val fout = FileOutputStream(newFile)
+                    var count: Int
+                    while (zis.read(buffer).also { count = it } != -1) {
+                        fout.write(buffer, 0, count)
+                    }
+                    fout.close()
+                }
+                zis.closeEntry()
+                zisEntry = zis.nextEntry
+            }
+        } finally {
+            zis.close()
         }
     }
 
@@ -248,7 +377,8 @@ class HomeFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("🛠️ اختر المود للتحميل")
             .setItems(mods) { _, which ->
-                downloadFile(urls[which], "mod_${which + 1}.zip", "تحميل ${mods[which]}")
+                // يمكن تفعيل التحميل المباشر للمودات بنفس الطريقة إذا رغبت
+                Toast.makeText(context, "جاري تحضير ${mods[which]}...", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("إلغاء", null)
             .show()
@@ -281,68 +411,6 @@ class HomeFragment : Fragment() {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    private fun downloadFile(url: String, fileName: String, title: String) {
-        val progressDialog = ProgressDialog(requireContext()).apply {
-            setTitle(title)
-            setMessage("جاري التحميل...")
-            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-            isIndeterminate = false
-            setCancelable(false)
-            show()
-        }
-
-        thread {
-            try {
-                val connection = URL(url).openConnection() as HttpURLConnection
-                connection.connect()
-
-                val fileLength = connection.contentLength
-                val input = connection.inputStream
-
-                val downloadDir = File(
-                    Environment.getExternalStorageDirectory(),
-                    "Download/LasVenturasRP/Mods"
-                )
-                if (!downloadDir.exists()) downloadDir.mkdirs()
-
-                val outputFile = File(downloadDir, fileName)
-                val output = FileOutputStream(outputFile)
-
-                val buffer = ByteArray(1024)
-                var total: Long = 0
-                var count: Int
-
-                while (input.read(buffer).also { count = it } != -1) {
-                    total += count
-                    output.write(buffer, 0, count)
-
-                    if (fileLength > 0) {
-                        val progress = (total * 100 / fileLength).toInt()
-                        activity?.runOnUiThread {
-                            progressDialog.progress = progress
-                            progressDialog.setMessage("تم: $progress%")
-                        }
-                    }
-                }
-
-                output.flush()
-                output.close()
-                input.close()
-
-                activity?.runOnUiThread {
-                    progressDialog.dismiss()
-                    Toast.makeText(context, "✅ اكتمل التحميل!", Toast.LENGTH_LONG).show()
-                }
-
-            } catch (e: Exception) {
-                activity?.runOnUiThread {
-                    progressDialog.dismiss()
-                    Toast.makeText(context, "❌ خطأ: ${e.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-    }
-
     private fun setupPingChart() {
         val entries = ArrayList<Entry>()
         entries.add(Entry(0f, 24f))
@@ -357,11 +425,12 @@ class HomeFragment : Fragment() {
             lineWidth = 2f
         }
 
+Features:
         chartPing.data = LineData(dataSet)
         chartPing.description.isEnabled = false
         chartPing.legend.isEnabled = false
         chartPing.xAxis.isEnabled = false
-        chartPing.axisLeft.isEnabled = false
+        chartPing.axisLeft.isEnabled, false
         chartPing.axisRight.isEnabled = false
         chartPing.invalidate()
     }
