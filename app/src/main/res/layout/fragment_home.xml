@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dark_background"
+    android:background="@drawable/gradient_background"
     android:fillViewport="true">
 
     <LinearLayout
@@ -19,18 +19,22 @@
             android:layout_height="wrap_content"
             android:text="Las Venturas RP"
             android:textColor="@color/gold"
-            android:textSize="26sp"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:shadowColor="#D4AF37"
+            android:shadowRadius="8"
+            android:shadowDx="0"
+            android:shadowDy="2"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="OpenSAM قاذفة"
+            android:text="قاذفة OpenSAM"
             android:textColor="@color/gray"
             android:textSize="14sp"
             android:gravity="center"
-            android:layout_marginBottom="20dp"/>
+            android:layout_marginBottom="16dp"/>
 
         <!-- ====== قسم تثبيت SA-MP (يظهر بس إذا مو مثبت) ====== -->
         <com.google.android.material.card.MaterialCardView
@@ -38,10 +42,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="#2D1B1B"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="16dp"
             app:strokeColor="@color/colorError"
-            app:strokeWidth="1dp"
-            android:layout_marginBottom="16dp">
+            app:strokeWidth="1.5dp"
+            app:cardElevation="8dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -51,8 +57,8 @@
                 android:padding="16dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
                     android:src="@android:drawable/ic_dialog_alert"
                     app:tint="@color/colorError"/>
 
@@ -68,7 +74,8 @@
                         android:layout_height="wrap_content"
                         android:text="SA-MP غير مثبت"
                         android:textColor="@color/white"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold"
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -82,18 +89,19 @@
                     android:id="@+id/btn_install_samp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="تثبيت"
+                    android:text="تثبيت الآن"
                     android:textColor="@color/white"
+                    android:textStyle="bold"
                     app:backgroundTint="@color/colorError"
-                    app:cornerRadius="8dp"/>
+                    app:cornerRadius="12dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
         <!-- ====== قسم التحميلات ====== -->
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="لوحة التحميلات"
+            android:text="⚡ لوحة التحميلات"
             android:textColor="@color/gold"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -104,7 +112,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:weightSum="2"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="16dp">
 
             <!-- تحميل الكاش -->
             <com.google.android.material.card.MaterialCardView
@@ -114,20 +122,24 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="8dp"
                 app:cardBackgroundColor="@color/card_background"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:strokeColor="@color/gold"
-                app:strokeWidth="1dp">
+                app:strokeWidth="1dp"
+                app:cardElevation="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:src="@android:drawable/stat_sys_download"
                         app:tint="@color/gold"/>
 
@@ -137,7 +149,7 @@
                         android:text="تحميل الكاش"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -156,20 +168,24 @@
                 android:layout_weight="1"
                 android:layout_marginStart="8dp"
                 app:cardBackgroundColor="@color/card_background"
-                app:cardCornerRadius="12dp"
+                app:cardCornerRadius="16dp"
                 app:strokeColor="@color/purple"
-                app:strokeWidth="1dp">
+                app:strokeWidth="1dp"
+                app:cardElevation="6dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:padding="16dp">
+                    android:padding="18dp">
 
                     <ImageView
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:src="@android:drawable/ic_menu_manage"
                         app:tint="@color/purple"/>
 
@@ -179,7 +195,7 @@
                         android:text="تحميل مود"
                         android:textColor="@color/white"
                         android:textStyle="bold"
-                        android:layout_marginTop="8dp"/>
+                        android:layout_marginTop="10dp"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,44 +208,65 @@
 
         </LinearLayout>
 
-        <!-- ====== حالة السيرفر (عدد لاعبين حقيقي) ====== -->
+        <!-- ====== حالة السيرفر + زر الدخول (الجديد) ====== -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="20dp"
             app:strokeColor="@color/gold"
-            app:strokeWidth="1dp"
+            app:strokeWidth="1.5dp"
+            app:cardElevation="10dp"
             android:layout_marginBottom="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="18dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- عنوان الحالة + زر تحديث -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="حالة السيرفر"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="16sp"/>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📊 حالة السيرفر"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:textSize="17sp"/>
+
+                    <ImageButton
+                        android:id="@+id/btn_refresh_status"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@android:drawable/ic_menu_rotate"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:tint="@color/gold"/>
+                </LinearLayout>
+
+                <!-- حالة السيرفر -->
                 <TextView
                     android:id="@+id/tv_server_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🟡 جاري التحقق..."
                     android:textColor="@color/gold"
-                    android:layout_marginTop="8dp"
-                    android:textSize="14sp"/>
+                    android:layout_marginTop="10dp"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
 
+                <!-- عدد اللاعبين و Ping -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginTop="10dp">
 
                     <TextView
                         android:id="@+id/tv_players_count"
@@ -238,7 +275,7 @@
                         android:layout_weight="1"
                         android:text="لاعبين: --/--"
                         android:textColor="@color/white"
-                        android:textSize="14sp"/>
+                        android:textSize="15sp"/>
 
                     <TextView
                         android:id="@+id/tv_ping"
@@ -246,14 +283,47 @@
                         android:layout_height="wrap_content"
                         android:text="Ping: --"
                         android:textColor="@color/green"
-                        android:textSize="14sp"/>
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
+                <!-- رسم Ping -->
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_ping"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="8dp"/>
+                    android:layout_height="55dp"
+                    android:layout_marginTop="10dp"/>
+
+                <!-- فاصل -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#3A3A5C"
+                    android:layout_marginVertical="12dp"/>
+
+                <!-- IP السيرفر -->
+                <TextView
+                    android:id="@+id/tv_server_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="142.132.203.47:21299"
+                    android:textColor="@color/gray"
+                    android:textSize="13sp"
+                    android:layout_gravity="center"/>
+
+                <!-- 🔥 زر دخول السيرفر (المكان الجديد المناسب) -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_join_server"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="🎮 دخول السيرفر"
+                    android:textColor="@color/dark_background"
+                    android:textStyle="bold"
+                    android:textSize="17sp"
+                    android:layout_marginTop="12dp"
+                    app:backgroundTint="@color/gold"
+                    app:cornerRadius="16dp"
+                    app:elevation="4dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -262,7 +332,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
             android:layout_marginBottom="12dp">
 
             <LinearLayout
@@ -273,8 +344,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_myplaces"
                     app:tint="@color/gray"/>
 
@@ -283,7 +354,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginStart="10dp">
+                    android:layout_marginStart="12dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -299,7 +370,7 @@
                         android:layout_height="wrap_content"
                         android:text="YourInGameNick"
                         android:textColor="@color/gold"
-                        android:textSize="14sp"/>
+                        android:textSize="15sp"/>
                 </LinearLayout>
 
                 <Button
@@ -318,7 +389,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="12dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
             android:layout_marginBottom="12dp">
 
             <LinearLayout
@@ -330,16 +402,17 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="الأخبار والتحديثات"
+                    android:text="📰 الأخبار والتحديثات"
                     android:textColor="@color/white"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="V3.2 - آخر تحديث: 24/8/2026"
                     android:textColor="@color/gold"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="6dp"
                     android:textSize="13sp"/>
 
                 <TextView
@@ -348,7 +421,7 @@
                     android:text="آخر تحديث امتشية طلسمة و بعدك المخبأل..."
                     android:textColor="@color/gray"
                     android:textSize="12sp"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="3dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -357,8 +430,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="12dp"
-            android:layout_marginBottom="16dp">
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -369,9 +443,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="خلاصة المجتمع"
+                    android:text="🌐 خلاصة المجتمع"
                     android:textColor="@color/white"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    android:textSize="15sp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -379,7 +454,7 @@
                     android:text="انضم لمجتمعنا على الديسكورد"
                     android:textColor="@color/gray"
                     android:textSize="12sp"
-                    android:layout_marginTop="2dp"/>
+                    android:layout_marginTop="3dp"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -408,59 +483,6 @@
                         android:textSize="12sp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
                 </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ====== دخول السيرفر ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:strokeColor="@color/gold"
-            app:strokeWidth="2dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="18dp">
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@android:drawable/ic_menu_gallery"
-                    android:layout_marginBottom="10dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="سيرفر Las Venturas RP الحصري"
-                    android:textColor="@color/gold"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/tv_server_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="142.132.203.47:21299"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_join_server"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="دخول السيرفر"
-                    android:textColor="@color/dark_background"
-                    android:textStyle="bold"
-                    android:textSize="16sp"
-                    android:layout_marginTop="12dp"
-                    app:backgroundTint="@color/gold"
-                    app:cornerRadius="24dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
