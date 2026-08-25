@@ -145,7 +145,7 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // بدء التحقيق والتحميل الحقيقي للكاش
+        // بدء التحميل الحقيقي للكاش
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             startRealCacheDownloadAndExtract()
@@ -377,7 +377,6 @@ class HomeFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("🛠️ اختر المود للتحميل")
             .setItems(mods) { _, which ->
-                // يمكن تفعيل التحميل المباشر للمودات بنفس الطريقة إذا رغبت
                 Toast.makeText(context, "جاري تحضير ${mods[which]}...", Toast.LENGTH_SHORT).show()
             }
             .setNegativeButton("إلغاء", null)
@@ -425,12 +424,11 @@ class HomeFragment : Fragment() {
             lineWidth = 2f
         }
 
-Features:
         chartPing.data = LineData(dataSet)
         chartPing.description.isEnabled = false
         chartPing.legend.isEnabled = false
         chartPing.xAxis.isEnabled = false
-        chartPing.axisLeft.isEnabled, false
+        chartPing.axisLeft.isEnabled = false
         chartPing.axisRight.isEnabled = false
         chartPing.invalidate()
     }
