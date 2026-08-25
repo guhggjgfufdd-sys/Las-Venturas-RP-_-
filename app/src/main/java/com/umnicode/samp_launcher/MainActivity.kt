@@ -22,7 +22,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    // واجهة للتوافق المباشر مع جافا
     fun interface PermissionCallback {
         fun onResult(isGranted: Boolean)
     }
@@ -119,16 +118,16 @@ class MainActivity : AppCompatActivity() {
         super.onWindowFocusChanged(hasFocus)
 
         if (hasFocus) {
-            if (permissionCallback != null && IsStoragePermissionsGranted()) {
+            if (IsStoragePermissionsGranted()) {
                 permissionCallback?.onResult(true)
                 permissionCallback = null
-            }
 
-            try {
-                val app = applicationContext as? LauncherApplication
-                app?.Installer?.ReCheckInstallResources(this)
-            } catch (e: Throwable) {
-                Log.e("LauncherApplication", "Error in ReCheckInstallResources: ${e.message}")
+                try {
+                    val app = applicationContext as? LauncherApplication
+                    app?.Installer?.ReCheckInstallResources(this)
+                } catch (e: Throwable) {
+                    Log.e("LauncherApplication", "Error in ReCheckInstallResources: ${e.message}")
+                }
             }
         }
     }
