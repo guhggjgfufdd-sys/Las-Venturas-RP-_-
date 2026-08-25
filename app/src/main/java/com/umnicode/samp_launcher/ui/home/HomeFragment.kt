@@ -56,7 +56,7 @@ class HomeFragment : Fragment() {
     private val refreshRunnable = object : Runnable {
         override fun run() {
             checkServerStatus()
-            handler.postDelayed(this, 30000) // تحديث كل 30 ثانية
+            handler.postDelayed(this, 30000)
         }
     }
 
@@ -111,12 +111,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // تعديل الاسم
         btnEditNick.setOnClickListener {
             showEditNicknameDialog()
         }
 
-        // دخول السيرفر
         btnJoinServer.setOnClickListener {
             try {
                 val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
@@ -127,35 +125,29 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // ديسكورد
         btnDiscord.setOnClickListener {
             openUrl(DISCORD_URL)
         }
 
-        // دخول
         btnLogin.setOnClickListener {
             Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
         }
 
-        // تثبيت SA-MP
         btnInstallSamp.setOnClickListener {
             val app = requireActivity().application as LauncherApplication
             app.Installer?.Install(requireActivity())
         }
 
-        // تحميل الكاش
         cardDownloadCache.setOnClickListener {
             val app = requireActivity().application as LauncherApplication
             app.Installer?.InstallOnlyCache(requireActivity())
         }
 
-        // تحميل المود
         cardDownloadMod.setOnClickListener {
             showModDownloadDialog()
         }
     }
 
-    // التحقق إذا SA-MP مثبت
     private fun checkSAMPStatus() {
         val status = SAMPInstaller.IsInstalled(requireActivity().packageManager, resources)
         when (status) {
@@ -173,19 +165,24 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // فحص حالة السيرفر (عدد لاعبين حقيقي)
     private fun checkServerStatus() {
-        ServerConfig.Resolve(SERVER_IP, SERVER_PORT, 3000, requireContext(), object : ServerResolveCallback {
+        val app = requireActivity().application as LauncherApplication
+        val pingTimeout = app.userConfig.PingTimeout
+        if (pingTimeout <= 0) {
+            app.userConfig.PingTimeout = 3000
+        }
+
+        ServerConfig.Resolve(SERVER_IP, SERVER_PORT, app.userConfig.PingTimeout, requireContext(), object : ServerResolveCallback {
             override fun OnFinish(OutConfig: ServerConfig?) {
                 activity?.runOnUiThread {
                     OutConfig?.let { config ->
                         tvPlayersCount.text = "لاعبين: ${config.OnlinePlayers}/${config.MaxPlayers}"
-                        
+
                         when {
                             ServerConfig.IsStatusOk(config.Status) -> {
                                 tvServerStatus.text = "🟢 السيرفر أونلاين"
                                 tvServerStatus.setTextColor(resources.getColor(R.color.green))
-                                tvPing.text = "Ping: ${config.PingTimeout}ms"
+                                tvPing.text = "Ping: نشط"
                             }
                             ServerConfig.IsStatusNone(config.Status) -> {
                                 tvServerStatus.text = "🟡 جاري التحقق..."
@@ -195,6 +192,7 @@ class HomeFragment : Fragment() {
                                 tvServerStatus.text = "🔴 السيرفر أوفلاين"
                                 tvServerStatus.setTextColor(resources.getColor(R.color.colorError))
                                 tvPing.text = "Ping: --"
+                                tvPlayersCount.text = "لاعبين: 0/0"
                             }
                         }
                     }
@@ -218,7 +216,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-    // ديالوج اختيار المود
     private fun showModDownloadDialog() {
         val mods = arrayOf("مود السيارات", "مود الأسلحة", "مود الشخصيات", "مود الخريطة الكاملة")
         val urls = arrayOf(
@@ -237,7 +234,6 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    // ديالوج تعديل الاسم
     private fun showEditNicknameDialog() {
         val editText = EditText(requireContext()).apply {
             setText(tvNickname.text)
@@ -261,12 +257,10 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    // فتح رابط
     private fun openUrl(url: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    // نظام التحميل العام
     private fun downloadFile(url: String, fileName: String, title: String) {
         val progressDialog = ProgressDialog(requireContext()).apply {
             setTitle(title)
@@ -329,7 +323,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // رسم الـ Ping
     private fun setupPingChart() {
         val entries = ArrayList<Entry>()
         entries.add(Entry(0f, 24f))
@@ -353,7 +346,6 @@ class HomeFragment : Fragment() {
         chartPing.invalidate()
     }
 
-    // تحميل الاسم المحفوظ
     private fun loadNickname() {
         val app = requireActivity().application as LauncherApplication
         if (app.userConfig.Nickname.isNotEmpty()) {
