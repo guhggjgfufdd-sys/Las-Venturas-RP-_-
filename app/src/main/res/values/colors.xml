@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- ألوان التطبيق الأساسية (مطلوبة من styles.xml) -->
+    <!-- ألوان التطبيق الأساسية -->
     <color name="colorPrimary">#D4AF37</color>
     <color name="colorPrimaryDark">#0F0F1A</color>
     <color name="colorAccent">#D4AF37</color>
+    
+    <!-- ألوان إضافية مطلوبة من ملفات المشروع الأصلية -->
+    <color name="colorError">#CF6679</color>
+    <color name="colorNone">#8E8E93</color>
+    <color name="colorOnline">#34C759</color>
+    <color name="colorOffline">#FF3B30</color>
 
     <!-- ألوان الواجهة الجديدة -->
     <color name="dark_background">#0F0F1A</color>
