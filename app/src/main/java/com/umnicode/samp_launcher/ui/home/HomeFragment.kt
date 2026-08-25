@@ -115,50 +115,42 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupListeners() {
-        // تعديل الاسم
         btnEditNick.setOnClickListener {
             showEditNicknameDialog()
         }
 
-        // دخول السيرفر مباشرة
         btnJoinServer.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             joinServer()
         }
 
-        // دخول السيرفر من الزر الرئيسي الكبير (إن وجد)
         btnEnterGame?.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             joinServer()
         }
 
-        // زر الديسكورد
         btnDiscord.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             openUrl(DISCORD_URL)
         }
 
-        // تحديث حالة السيرفر يدوياً
         btnRefreshStatus.setOnClickListener {
             it.animate().rotationBy(360f).setDuration(500).start()
             checkServerStatus()
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // بدء التحميل الاحترافي الحقيقي وفك الضغط والحفظ
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             startProfessionalDownloadAndExtract()
         }
 
-        // تحميل المود
         cardDownloadMod.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             showModDownloadDialog()
         }
     }
 
-    // التحقق عما إذا كان الكاش مثبتاً مسبقاً لإخفاء بطاقة التحميل
     private fun checkCacheStatus() {
         val targetDir = requireContext().getExternalFilesDir(null)
         if (targetDir != null && targetDir.exists() && (targetDir.list()?.isNotEmpty() == true)) {
@@ -168,7 +160,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // نظام التحميل الاحترافي مع عداد السرعة، الحفظ الدائم، وفك الضغط السلس
     private fun startProfessionalDownloadAndExtract() {
         val progressDialog = ProgressDialog(requireContext()).apply {
             setTitle("📥 تحميل كاش SA-MP الاحترافي")
@@ -190,13 +181,12 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                // حفظ الملف المؤقت بشكل آمن
                 val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 if (!downloadDir.exists()) downloadDir.mkdirs()
                 val zipFile = File(downloadDir, "samp_cache_pro.zip")
 
                 val outputStream = FileOutputStream(zipFile)
-                val data = ByteArray(16384) // زيادة حجم الـ Buffer لتحسين السرعة
+                val data = ByteArray(16384)
                 var total: Long = 0
                 var count: Int
                 
@@ -209,8 +199,8 @@ class HomeFragment : Fragment() {
                     outputStream.write(data, 0, count)
 
                     val currentTime = System.currentTimeMillis()
-                    // حساب السرعة كل 400 مللي ثانية
-                    if (currentTime - lastTime >= 400 || total == fileLength) {
+                    // تم تصحيح مقارنة total مع fileLength هنا بتحويله إلى Long
+                    if (currentTime - lastTime >= 400 || total == fileLength.toLong()) {
                         val timeElapsed = (currentTime - lastTime) / 1000.0
                         val bytesRead = total - lastTotal
                         val speedKBps = if (timeElapsed > 0) (bytesRead / 1024.0) / timeElapsed else 0.0
@@ -220,7 +210,7 @@ class HomeFragment : Fragment() {
                         lastTotal = total
 
                         if (fileLength > 0) {
-                            val progress = ((total * 100) / fileLength).toInt()
+                            val progress = ((total * 100) / fileLength.toLong()).toInt()
                             val downloadedMB = total / (1024 * 1024)
                             val totalMB = fileLength / (1024 * 1024)
 
@@ -236,19 +226,16 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                // ضمان الحفظ الثابت والدائم على الذاكرة الفيزيائية للجهاز
                 outputStream.flush()
                 outputStream.fd.sync()
                 outputStream.close()
                 input.close()
 
-                // المرحلة الثانية: فك الضغط ونقل الملفات للمسار الصحيح المخصص للعبة
                 activity?.runOnUiThread {
                     progressDialog.isIndeterminate = true
                     progressDialog.setMessage("📂 جاري فك الضغط وحفظ الملفات في مسارها الصحيح...")
                 }
 
-                // المسار الصحيح المخصص لقراءة ملفات اللعبة بواسطة اللاونشر
                 val targetDir = requireContext().getExternalFilesDir(null) ?: File(Environment.getExternalStorageDirectory(), "Android/data/com.umnicode.samp_launcher/files")
                 if (!targetDir.exists()) {
                     targetDir.mkdirs()
@@ -256,7 +243,6 @@ class HomeFragment : Fragment() {
 
                 unzipAndSavePermanently(zipFile, targetDir)
 
-                // حذف الملف المضغوط المؤقت بعد إتمام النقل والحفظ بنجاح
                 if (zipFile.exists()) {
                     zipFile.delete()
                 }
@@ -264,8 +250,6 @@ class HomeFragment : Fragment() {
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
                     Toast.makeText(context, "✅ تمت عملية التحميل، الفك والحفظ بنجاح تام!", Toast.LENGTH_LONG).show()
-                    
-                    // إخفاء بطاقة التحميل والانتقال للواجهة الأساسية للعبة
                     cardDownloadCache.visibility = View.GONE
                 }
 
@@ -278,7 +262,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // دالة فك الضغط والحفظ الدائم للملفات واستقرارها بالهيكلة الصحيحة
     private fun unzipAndSavePermanently(zipFile: File, targetDirectory: File) {
         val zis = ZipInputStream(BufferedInputStream(FileInputStream(zipFile)))
         try {
