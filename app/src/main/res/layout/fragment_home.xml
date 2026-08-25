@@ -10,45 +10,62 @@
         android:orientation="vertical"
         android:paddingBottom="20dp">
 
-        <!-- الهيدر مع الشعار -->
+        <!-- الهيدر -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="220dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/hero_gradient_bg"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:gravity="bottom">
+            android:padding="20dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LAS VENTURAS RP"
-                android:textColor="#FFFFFF"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.05" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="تجربة رول بلاي احترافية • أداء مستقر"
-                android:textColor="#C9BFFF"
-                android:textSize="13sp" />
-
+            <!-- الشعار + الاسم -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="12dp">
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:background="@drawable/emblem_bg"
+                    android:gravity="center"
+                    android:text="LV"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="18sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="LAS VENTURAS RP"
+                        android:textColor="#FFFFFF"
+                        android:textSize="19sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.03" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="تجربة رول بلاي احترافية"
+                        android:textColor="#C9BFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/serverStatusBadge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/status_badge_bg"
+                    android:background="@drawable/status_pending_bg"
                     android:paddingHorizontal="12dp"
-                    android:paddingVertical="5dp"
+                    android:paddingVertical="6dp"
                     android:text="● جاري التحقق"
                     android:textColor="#FFC107"
                     android:textSize="11sp"
@@ -62,25 +79,35 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- بطاقة السيرفر الرئيسية -->
+            <!-- إطار السيرفر الذهبي المميز -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_elevated_bg"
+                android:background="@drawable/server_frame_bg"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="18dp"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="سيرفر Las Venturas RP الحصري"
+                    android:textColor="#F0C674"
+                    android:textStyle="bold"
+                    android:textSize="14sp" />
 
                 <com.umnicode.samp_launcher.core.ServerView
                     android:id="@+id/server_view"
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical" />
+                    android:gravity="center" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#1F1F2E"
+                    android:background="#2A2440"
                     android:layout_marginTop="14dp"
                     android:layout_marginBottom="14dp" />
 
@@ -88,8 +115,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="اسم الدخول"
-                    android:textColor="#888888"
-                    android:textSize="12sp" />
+                    android:textColor="#AAAAAA"
+                    android:textSize="12sp"
+                    android:layout_gravity="start" />
 
                 <EditText
                     android:id="@+id/nickname"
@@ -103,38 +131,16 @@
                     android:textColorHint="#555566"
                     android:textSize="14sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="كلمة المرور"
-                    android:textColor="#888888"
-                    android:textSize="12sp" />
-
-                <EditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:layout_marginTop="6dp"
-                    android:background="@drawable/input_bg"
-                    android:hint="اتركها فارغة إذا ما فيه"
-                    android:inputType="textPassword"
-                    android:paddingHorizontal="14dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#555566"
-                    android:textSize="14sp" />
-
                 <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
                     android:id="@+id/play_btn"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"
-                    android:layout_marginTop="18dp"
-                    android:background="@drawable/button_gradient_bg"
-                    android:text="دخول اللعبة"
-                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/button_gold_gradient_bg"
+                    android:text="دخول السيرفر"
+                    android:textColor="#1A1200"
                     android:textStyle="bold"
                     android:textSize="15sp" />
-
             </LinearLayout>
 
             <!-- بطاقة تثبيت الملفات -->
@@ -185,55 +191,49 @@
                     android:stateListAnimator="@null" />
             </LinearLayout>
 
-            <!-- صف الروابط: ديسكورد -->
+            <!-- بطاقة الديسكورد -->
             <LinearLayout
+                android:id="@+id/discord_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/discord_card_bg"
                 android:orientation="horizontal"
-                android:layout_marginTop="14dp">
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_marginTop="14dp"
+                android:clickable="true"
+                android:focusable="true">
 
                 <LinearLayout
-                    android:id="@+id/discord_card"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/discord_card_bg"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="مجتمع Las Venturas RP"
-                            android:textColor="#FFFFFF"
-                            android:textStyle="bold"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"
-                            android:text="انضم للديسكورد وتواصل مع اللاعبين"
-                            android:textColor="#B9AEFF"
-                            android:textSize="11sp" />
-                    </LinearLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="انضمام ←"
+                        android:text="مجتمع Las Venturas RP"
                         android:textColor="#FFFFFF"
                         android:textStyle="bold"
-                        android:textSize="13sp" />
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="انضم للديسكورد وتواصل مع اللاعبين"
+                        android:textColor="#B9AEFF"
+                        android:textSize="11sp" />
                 </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="انضمام ←"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:textSize="13sp" />
             </LinearLayout>
 
         </LinearLayout>
