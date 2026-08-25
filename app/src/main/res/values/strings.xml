@@ -14,8 +14,9 @@
     <string name="play_button_install_SAMP">تثبيت ملفات SAMP</string>
     <string name="play_button_install_SAMP_APK">تثبيت APK</string>
     <string name="play_button_install_SAMP_CACHE">تثبيت الكاش</string>
-    <string name="play_button_show_download_status">جاري التحميل %d من %d</string>
-    <string name="play_button_show_extract_status">جاري فك الضغط %.2f/%.2f</string>
+    <!-- ↓↓↓ إضافة formatted="false" لمنع التحذير -->
+    <string name="play_button_show_download_status" formatted="false">جاري التحميل %d من %d</string>
+    <string name="play_button_show_extract_status" formatted="false">جاري فك الضغط %.2f/%.2f</string>
 
     <string name="add_server_button">إضافة سيرفر للقائمة</string>
 
@@ -26,13 +27,14 @@
     <string name="help_string">أدخل عنوان السيرفر والمنفذ</string>
     <string name="help_server_info">معلومات السيرفر</string>
 
-    <string name="server_players">لاعبين متصلين %d/%d</string>
-    <string name="server_port_ip">%s : %d</string>
-    <string name="server_time">الوقت - %s</string>
-    <string name="server_mode">الطور - %s</string>
-    <string name="server_map">الخريطة - %s</string>
-    <string name="server_language">اللغة - %s</string>
-    <string name="server_password">كلمة السر - %s</string>
+    <!-- ↓↓↓ إضافة formatted="false" -->
+    <string name="server_players" formatted="false">لاعبين متصلين %d/%d</string>
+    <string name="server_port_ip" formatted="false">%s : %d</string>
+    <string name="server_time" formatted="false">الوقت - %s</string>
+    <string name="server_mode" formatted="false">الطور - %s</string>
+    <string name="server_map" formatted="false">الخريطة - %s</string>
+    <string name="server_language" formatted="false">اللغة - %s</string>
+    <string name="server_password" formatted="false">كلمة السر - %s</string>
 
     <string name="none_string">غير متوفر</string>
 
@@ -51,7 +53,6 @@
     <string name="app_root_directory_name">OpenSAMP_Launcher</string>
     <string name="SAMP_download_directory_name">Temp</string>
 
-    <!-- تم تصحيح الرموز الخاطئة في الروابط &amp; -->
     <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa15YW81wfsrLMQ2APmCW-XNmJxYZ3</string>
     <string name="SAMP_data_url">https://www.dropbox.com/s/hti52zezmqy2snw/obb.zip?dl=1</string>
 
@@ -65,12 +66,14 @@
     <string name="install_status_apk_not_found">ملف APK غير موجود</string>
 
     <string name="installer_status_preparing">جاري التجهيز للتحميل...</string>
-    <string name="installer_status_downloading">جاري تحميل ملفات SAMP %d من %d</string>
-    <string name="installer_status_extracting">جاري فك الضغط %.2f/%.2f MB</string>
+    <!-- ↓↓↓ إضافة formatted="false" -->
+    <string name="installer_status_downloading" formatted="false">جاري تحميل ملفات SAMP %d من %d</string>
+    <string name="installer_status_extracting" formatted="false">جاري فك الضغط %.2f/%.2f MB</string>
     <string name="installer_status_waiting_for_apk_install">اضغط لتثبيت APK اللعبة</string>
 
-    <string name="installer_progress_bar_full">%.2f/%.2f MB</string>
-    <string name="installer_progress_bar_only_done">%.2f MB</string>
+    <!-- ↓↓↓ إضافة formatted="false" -->
+    <string name="installer_progress_bar_full" formatted="false">%.2f/%.2f MB</string>
+    <string name="installer_progress_bar_only_done" formatted="false">%.2f MB</string>
 
     <string name="installer_button_install">تثبيت SAMP</string>
     <string name="installer_button_install_cache">تثبيت الكاش</string>
