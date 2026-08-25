@@ -14,27 +14,26 @@
     <string name="play_button_install_SAMP">تثبيت ملفات SAMP</string>
     <string name="play_button_install_SAMP_APK">تثبيت APK</string>
     <string name="play_button_install_SAMP_CACHE">تثبيت الكاش</string>
-    <!-- ↓↓↓ إضافة formatted="false" لمنع التحذير -->
-    <string name="play_button_show_download_status" formatted="false">جاري التحميل %d من %d</string>
-    <string name="play_button_show_extract_status" formatted="false">جاري فك الضغط %.2f/%.2f</string>
+
+    <string name="play_button_show_download_status" formatted="false">%d من %d جاري التحميل</string>
+    <string name="play_button_show_extract_status" formatted="false">%2.2f%% جاري فك الضغط</string>
 
     <string name="add_server_button">إضافة سيرفر للقائمة</string>
 
-    <string name="server_port_hint">منفذ السيرفر Port</string>
-    <string name="server_ip_hint">عنوان السيرفر IP</string>
+    <string name="server_port_hint">منفذ Port</string>
+    <string name="server_ip_hint">عنوان IP السيرفر</string>
     <string name="server_password_hint">كلمة السر (اختياري)</string>
 
     <string name="help_string">أدخل عنوان السيرفر والمنفذ</string>
     <string name="help_server_info">معلومات السيرفر</string>
 
-    <!-- ↓↓↓ إضافة formatted="false" -->
-    <string name="server_players" formatted="false">لاعبين متصلين %d/%d</string>
-    <string name="server_port_ip" formatted="false">%s : %d</string>
-    <string name="server_time" formatted="false">الوقت - %s</string>
-    <string name="server_mode" formatted="false">الطور - %s</string>
-    <string name="server_map" formatted="false">الخريطة - %s</string>
-    <string name="server_language" formatted="false">اللغة - %s</string>
-    <string name="server_password" formatted="false">كلمة السر - %s</string>
+    <string name="server_players" formatted="false">اللاعبين المتصلين: %d/%d</string>
+    <string name="server_part_ip" formatted="false">%s : %d</string>
+    <string name="server_time" formatted="false">الوقت: %s</string>
+    <string name="server_mode" formatted="false">الطور: %s</string>
+    <string name="server_map" formatted="false">الخريطة: %s</string>
+    <string name="server_language" formatted="false">اللغة: %s</string>
+    <string name="server_password" formatted="false">كلمة السر: %s</string>
 
     <string name="none_string">غير متوفر</string>
 
@@ -53,8 +52,8 @@
     <string name="app_root_directory_name">OpenSAMP_Launcher</string>
     <string name="SAMP_download_directory_name">Temp</string>
 
-    <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa15YW81wfsrLMQ2APmCW-XNmJxYZ3</string>
-<string name="SAMP_data_url">https://github.com/guhggjgfufdd-sys/SAMP-Mobile-Launcher-RN/releases/download/v1.0/2.11.gtasa.zip</string>
+    <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa15YWB1wfsrLMQ2APmCW-XNmJxYZ3</string>
+    <string name="SAMP_data_url">https://github.com/guhggjgfufdd-sys/SAMP-Mobile-Launcher-RN/releases/download/v1.0/2.11.gtasa.zip</string>
 
     <string name="installer_status_none_SAMP_found">تم العثور على ملفات SAMP</string>
     <string name="installer_status_none_SAMP_not_found">ملفات SAMP غير موجودة</string>
@@ -65,15 +64,14 @@
     <string name="install_status_storage_permissions_denied">تم رفض صلاحية التخزين</string>
     <string name="install_status_apk_not_found">ملف APK غير موجود</string>
 
-    <string name="installer_status_preparing">جاري التجهيز للتحميل...</string>
-    <!-- ↓↓↓ إضافة formatted="false" -->
-    <string name="installer_status_downloading" formatted="false">جاري تحميل ملفات SAMP %d من %d</string>
-    <string name="installer_status_extracting" formatted="false">جاري فك الضغط %.2f/%.2f MB</string>
+    <string name="installer_status_preparing">جاري تجهيز التحميل...</string>
+
+    <string name="installer_status_downloading" formatted="false">%d من %d جاري تحميل ملفات SAMP</string>
+    <string name="installer_status_extracting" formatted="false">%2.2f MB/s جاري فك الضغط</string>
     <string name="installer_status_waiting_for_apk_install">اضغط لتثبيت APK اللعبة</string>
 
-    <!-- ↓↓↓ إضافة formatted="false" -->
-    <string name="installer_progress_bar_full" formatted="false">%.2f/%.2f MB</string>
-    <string name="installer_progress_bar_only_done" formatted="false">%.2f MB</string>
+    <string name="installer_progress_bar_full" formatted="false">%2.2f/%2.2f MB</string>
+    <string name="installer_progress_bar_only_done" formatted="false">%2.2f MB</string>
 
     <string name="installer_button_install">تثبيت SAMP</string>
     <string name="installer_button_install_cache">تثبيت الكاش</string>
