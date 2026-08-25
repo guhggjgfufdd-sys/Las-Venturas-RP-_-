@@ -1,4 +1,4 @@
-package com.umnicode.samp_launcher
+package com.umnicode.samp_launcher.ui.home
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
@@ -19,6 +19,10 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.umnicode.samp_launcher.LauncherApplication
+import com.umnicode.samp_launcher.R
+import com.umnicode.samp_launcher.core.ServerConfig
+import com.umnicode.samp_launcher.core.ServerResolveCallback
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -35,29 +39,26 @@ class HomeFragment : Fragment() {
     private lateinit var chartPing: LineChart
     private lateinit var cardDownloadCache: CardView
     private lateinit var cardDownloadMod: CardView
+    private lateinit var tvPing: TextView
 
-    // روابط التحميل - عدلها حسب سيرفرك
     companion object {
-        const val CACHE_DOWNLOAD_URL = "https://yourserver.com/files/cache.zip"
-        const val MOD_DOWNLOAD_URL = "https://yourserver.com/files/mods.zip"
         const val DISCORD_URL = "https://discord.gg/yourserver"
+        const val SERVER_IP = "your.server.ip"
+        const val SERVER_PORT = 7777
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // ربط العناصر بالكود
         initViews(view)
-        
-        // إعداد المستمعات (Listeners)
         setupListeners()
-        
-        // إعداد رسم البيانات
         setupPingChart()
+        loadNickname()
+        checkServerStatus()
 
         return view
     }
@@ -71,49 +72,42 @@ class HomeFragment : Fragment() {
         chartPing = view.findViewById(R.id.chart_ping)
         cardDownloadCache = view.findViewById(R.id.card_download_cache)
         cardDownloadMod = view.findViewById(R.id.card_download_mod)
+        tvPing = view.findViewById(R.id.tv_ping)
     }
 
     private fun setupListeners() {
-        // تعديل الاسم
         btnEditNick.setOnClickListener {
             showEditNicknameDialog()
         }
 
-        // دخول السيرفر
         btnJoinServer.setOnClickListener {
-            joinServer()
+            try {
+                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
+                startActivity(intent)
+            } catch (e: Exception) {
+                Toast.makeText(context, "تأكد من تثبيت SA-MP", Toast.LENGTH_SHORT).show()
+            }
         }
 
-        // رابط الديسكورد
         btnDiscord.setOnClickListener {
             openUrl(DISCORD_URL)
         }
 
-        // تسجيل الدخول
         btnLogin.setOnClickListener {
-            // انتقل لشاشة تسجيل الدخول
             Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
         }
 
-        // تحميل الكاش
         cardDownloadCache.setOnClickListener {
-            downloadFile(
-                url = CACHE_DOWNLOAD_URL,
-                fileName = "cache_files.zip",
-                title = "تحميل الكاش",
-                extractPath = "Android/data/com.rockstargames.gtasa/files/"
-            )
+            val app = requireActivity().application as LauncherApplication
+            app.Installer?.InstallOnlyCache(requireActivity())
         }
 
-        // تحميل المود (الجديد)
         cardDownloadMod.setOnClickListener {
             showModDownloadDialog()
         }
     }
 
-    /**
-     * ديالوج اختيار المود قبل التحميل
-     */
     private fun showModDownloadDialog() {
         val mods = arrayOf("مود السيارات", "مود الأسلحة", "مود الشخصيات", "مود الخريطة الكاملة")
         val urls = arrayOf(
@@ -126,20 +120,12 @@ class HomeFragment : Fragment() {
         AlertDialog.Builder(requireContext())
             .setTitle("اختر المود للتحميل")
             .setItems(mods) { _, which ->
-                downloadFile(
-                    url = urls[which],
-                    fileName = "mod_${mods[which]}.zip",
-                    title = "تحميل ${mods[which]}",
-                    extractPath = "Android/data/com.rockstargames.gtasa/files/mods/"
-                )
+                downloadFile(urls[which], "mod_${mods[which]}.zip", "تحميل ${mods[which]}")
             }
             .setNegativeButton("إلغاء", null)
             .show()
     }
 
-    /**
-     * ديالوج تعديل الاسم
-     */
     private fun showEditNicknameDialog() {
         val editText = EditText(requireContext()).apply {
             setText(tvNickname.text)
@@ -153,11 +139,9 @@ class HomeFragment : Fragment() {
                 val newName = editText.text.toString().trim()
                 if (newName.isNotEmpty()) {
                     tvNickname.text = newName
-                    // حفظ في SharedPreferences
-                    requireContext().getSharedPreferences("launcher_prefs", 0)
-                        .edit()
-                        .putString("nickname", newName)
-                        .apply()
+                    val app = requireActivity().application as LauncherApplication
+                    app.userConfig.Nickname = newName
+                    app.userConfig.Save()
                     Toast.makeText(context, "تم الحفظ!", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -165,34 +149,11 @@ class HomeFragment : Fragment() {
             .show()
     }
 
-    /**
-     * دخول السيرفر (يفتح SA-MP)
-     */
-    private fun joinServer() {
-        try {
-            // إذا كان عندك Activity خاصة بالدخول
-            val intent = Intent(requireContext(), ServerJoinActivity::class.java)
-            startActivity(intent)
-        } catch (e: Exception) {
-            // fallback - افتح رابط samp مباشرة
-            val sampUrl = "samp://your.server.ip:7777"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
-            startActivity(intent)
-        }
-    }
-
-    /**
-     * فتح رابط خارجي
-     */
     private fun openUrl(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        startActivity(intent)
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
-    /**
-     * نظام التحميل العام (للكاش والمودات)
-     */
-    private fun downloadFile(url: String, fileName: String, title: String, extractPath: String) {
+    private fun downloadFile(url: String, fileName: String, title: String) {
         val progressDialog = ProgressDialog(requireContext()).apply {
             setTitle(title)
             setMessage("جاري التحميل...")
@@ -209,11 +170,10 @@ class HomeFragment : Fragment() {
 
                 val fileLength = connection.contentLength
                 val input = connection.inputStream
-                
-                // مجلد التحميلات
+
                 val downloadDir = File(
                     Environment.getExternalStorageDirectory(),
-                    "Download/LasVenturasRP"
+                    "Download/LasVenturasRP/Mods"
                 )
                 if (!downloadDir.exists()) downloadDir.mkdirs()
 
@@ -227,8 +187,7 @@ class HomeFragment : Fragment() {
                 while (input.read(buffer).also { count = it } != -1) {
                     total += count
                     output.write(buffer, 0, count)
-                    
-                    // تحديث الـ Progress
+
                     if (fileLength > 0) {
                         val progress = (total * 100 / fileLength).toInt()
                         activity?.runOnUiThread {
@@ -244,32 +203,18 @@ class HomeFragment : Fragment() {
 
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(
-                        context,
-                        "تم التحميل: ${outputFile.absolutePath}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    
-                    // هنا تقدر تضيف كود فك الضغط تلقائياً
-                    // unzipFile(outputFile, extractPath)
+                    Toast.makeText(context, "تم التحميل!", Toast.LENGTH_LONG).show()
                 }
 
             } catch (e: Exception) {
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(
-                        context,
-                        "خطأ في التحميل: ${e.message}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast.makeText(context, "خطأ: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    /**
-     * إعداد رسم الـ Ping
-     */
     private fun setupPingChart() {
         val entries = ArrayList<Entry>()
         entries.add(Entry(0f, 24f))
@@ -293,12 +238,23 @@ class HomeFragment : Fragment() {
         chartPing.invalidate()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // استرجاع الاسم المحفوظ
-        val savedName = requireContext()
-            .getSharedPreferences("launcher_prefs", 0)
-            .getString("nickname", "YourInGameNick")
-        tvNickname.text = savedName
+    private fun loadNickname() {
+        val app = requireActivity().application as LauncherApplication
+        if (app.userConfig.Nickname.isNotEmpty()) {
+            tvNickname.text = app.userConfig.Nickname
+        }
+    }
+
+    private fun checkServerStatus() {
+        ServerConfig.Resolve(SERVER_IP, SERVER_PORT, 3000, requireContext(), object : ServerResolveCallback {
+            override fun OnFinish(OutConfig: ServerConfig?) {
+                OutConfig?.let {
+                    if (it.OnlinePlayers >= 0) {
+                        tvPing.text = "Ping: نشط | لاعبين: ${it.OnlinePlayers}/${it.MaxPlayers}"
+                    }
+                }
+            }
+            override fun OnPingFinish(OutConfig: ServerConfig?) {}
+        })
     }
 }
