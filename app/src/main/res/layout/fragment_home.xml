@@ -2,258 +2,240 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D0D14"
-    android:padding="14dp">
+    android:background="#0B0B12">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
-        <!-- هيدر -->
+        <!-- الهيدر مع الشعار -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingBottom="14dp">
+            android:layout_height="220dp"
+            android:background="@drawable/hero_gradient_bg"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="bottom">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="v1.0"
-                android:textColor="#666666"
-                android:textSize="11sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Las Venturas RP"
+                android:text="LAS VENTURAS RP"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.05" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="تجربة رول بلاي احترافية • أداء مستقر"
+                android:textColor="#C9BFFF"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp">
+
+                <TextView
+                    android:id="@+id/serverStatusBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/status_badge_bg"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="5dp"
+                    android:text="● جاري التحقق"
+                    android:textColor="#FFC107"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- البانر الرئيسي -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/banner_gradient_bg"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- بطاقة السيرفر الرئيسية -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="مرحباً بك في Las Venturas RP"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="تجربة رول بلاي احترافية بأداء مستقر"
-                    android:textColor="#D0D0FF"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
-                android:id="@+id/play_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="42dp"
-                android:minWidth="120dp"
-                android:background="#3D2E7D"
-                android:paddingHorizontal="16dp"
-                android:text="دخول اللعبة"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:textSize="13sp" />
-        </LinearLayout>
-
-        <!-- لوحات الوصول السريع -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="لوحات الوصول السريع"
-            android:textColor="#888888"
-            android:textSize="12sp" />
-
-        <!-- الصف الأول: الاسم + الأداء -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <!-- بطاقة اسم اللاعب -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/card_bg"
+                android:background="@drawable/card_elevated_bg"
                 android:orientation="vertical"
-                android:padding="12dp"
-                android:layout_marginEnd="6dp">
+                android:padding="16dp">
+
+                <com.umnicode.samp_launcher.core.ServerView
+                    android:id="@+id/server_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#1F1F2E"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginBottom="14dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="اسم المستخدم"
+                    android:text="اسم الدخول"
                     android:textColor="#888888"
-                    android:textSize="11sp" />
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/nickname"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/input_bg"
-                    android:hint="اسمك هنا"
-                    android:paddingHorizontal="10dp"
+                    android:hint="اكتب اسمك بالسيرفر"
+                    android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#666666"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <!-- بطاقة الأداء -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/card_bg"
-                android:orientation="vertical"
-                android:padding="12dp"
-                android:layout_marginStart="6dp">
+                    android:textColorHint="#555566"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="كلمة السر"
+                    android:layout_marginTop="12dp"
+                    android:text="كلمة المرور"
                     android:textColor="#888888"
-                    android:textSize="11sp" />
+                    android:textSize="12sp" />
 
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="6dp"
                     android:background="@drawable/input_bg"
-                    android:hint="إن وجدت"
+                    android:hint="اتركها فارغة إذا ما فيه"
                     android:inputType="textPassword"
-                    android:paddingHorizontal="10dp"
+                    android:paddingHorizontal="14dp"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#666666"
-                    android:textSize="13sp" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:textColorHint="#555566"
+                    android:textSize="14sp" />
 
-        <!-- الصف الثاني: ديسكورد + تحديثات -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="12dp">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/card_bg"
-                android:orientation="vertical"
-                android:padding="12dp"
-                android:layout_marginEnd="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="مجتمع السيرفر"
+                <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
+                    android:id="@+id/play_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="18dp"
+                    android:background="@drawable/button_gradient_bg"
+                    android:text="دخول اللعبة"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
-                    android:textSize="13sp" />
+                    android:textSize="15sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+            </LinearLayout>
+
+            <!-- بطاقة تثبيت الملفات -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/card_elevated_bg"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="16dp"
+                android:layout_marginTop="14dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="انضم للديسكورد"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ملفات اللعبة"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="حمّل SA-MP قبل أول دخول"
+                        android:textColor="#888888"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/install_samp_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:background="@drawable/pill_button_bg"
+                    android:paddingHorizontal="18dp"
+                    android:text="تثبيت"
                     android:textColor="#8C7BFF"
-                    android:textSize="11sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/card_bg"
-                android:orientation="vertical"
-                android:padding="12dp"
-                android:layout_marginStart="6dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="آخر التحديثات"
-                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
                     android:textStyle="bold"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="تابع الجديد بالسيرفر"
-                    android:textColor="#888888"
-                    android:textSize="11sp" />
+                    android:textAllCaps="false"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null" />
             </LinearLayout>
+
+            <!-- صف الروابط: ديسكورد -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="14dp">
+
+                <LinearLayout
+                    android:id="@+id/discord_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/discord_card_bg"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="مجتمع Las Venturas RP"
+                            android:textColor="#FFFFFF"
+                            android:textStyle="bold"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"
+                            android:text="انضم للديسكورد وتواصل مع اللاعبين"
+                            android:textColor="#B9AEFF"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="انضمام ←"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
         </LinearLayout>
-
-        <!-- السيرفر الرسمي -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="السيرفر الرسمي"
-            android:textColor="#8C7BFF"
-            android:textStyle="bold"
-            android:textSize="14sp" />
-
-        <com.umnicode.samp_launcher.core.ServerView
-            android:id="@+id/server_view"
-            android:layout_width="match_parent"
-            android:layout_height="95dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/card_bg"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="14dp" />
-
-        <!-- حقول IP/Port مخفية (مثبتة على سيرفرك بالكود) -->
-        <EditText
-            android:id="@+id/ip"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/port"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone" />
-
     </LinearLayout>
 </ScrollView>
