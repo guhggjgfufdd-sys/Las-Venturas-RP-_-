@@ -72,7 +72,7 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "✅ تم منح الصلاحية بنجاح", Toast.LENGTH_SHORT).show()
             startProfessionalDownloadAndExtract()
         } else {
-            Toast.makeText(context, "❌ تم رفض الصلاحية، لا يمكن تحميل الملف بدونها", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, "❌ تم رفض الصلاحية", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -157,7 +157,7 @@ class HomeFragment : Fragment() {
 
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            checkPermissionAndDownload()
+            startProfessionalDownloadAndExtract()
         }
 
         cardDownloadMod.setOnClickListener {
@@ -172,24 +172,6 @@ class HomeFragment : Fragment() {
             cardDownloadCache.visibility = View.GONE
         } else {
             cardDownloadCache.visibility = View.VISIBLE
-        }
-    }
-
-    private fun checkPermissionAndDownload() {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            when {
-                ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ) == PackageManager.PERMISSION_GRANTED -> {
-                    startProfessionalDownloadAndExtract()
-                }
-                else -> {
-                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
-            }
-        } else {
-            startProfessionalDownloadAndExtract()
         }
     }
 
@@ -214,9 +196,10 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                if (!downloadDir.exists()) downloadDir.mkdirs()
-                val zipFile = File(downloadDir, "samp_cache_pro.zip")
+                // التعديل الجذري: استخدام مجلد التطبيق الخاص لتفادي مشكلة الـ Permission Denied نهائياً
+                val targetDir = requireContext().getExternalFilesDir(null) ?: requireContext().filesDir
+                if (!targetDir.exists()) targetDir.mkdirs()
+                val zipFile = File(targetDir, "samp_cache_pro.zip")
 
                 val outputStream = FileOutputStream(zipFile)
                 val data = ByteArray(16384)
@@ -266,11 +249,6 @@ class HomeFragment : Fragment() {
                 activity?.runOnUiThread {
                     progressDialog.isIndeterminate = true
                     progressDialog.setMessage("📂 جاري فك الضغط وحفظ الملفات في مسارها الصحيح...")
-                }
-
-                val targetDir = requireContext().getExternalFilesDir(null) ?: File(Environment.getExternalStorageDirectory(), "Android/data/com.umnicode.samp_launcher/files")
-                if (!targetDir.exists()) {
-                    targetDir.mkdirs()
                 }
 
                 unzipAndSavePermanently(zipFile, targetDir)
@@ -337,7 +315,7 @@ class HomeFragment : Fragment() {
                 if (browserIntent.resolveActivity(pm) != null) {
                     startActivity(browserIntent)
                 } else {
-                    Toast.makeText(context, "⚠️ يرجى التأكد من تثبيت مشغل اللعبة أو العميل الداعم للرابط", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "⚠️ يرجى التأكد من تثبيت مشغل اللعبة", Toast.LENGTH_LONG).show()
                 }
             }
         } catch (e: Exception) {
@@ -399,13 +377,6 @@ class HomeFragment : Fragment() {
 
     private fun showModDownloadDialog() {
         val mods = arrayOf("مود الخريطة الكاملة", "مود الشخصيات", "مود الأسلحة", "مود السيارات")
-        val urls = arrayOf(
-            "https://yourserver.com/mods/map.zip",
-            "https://yourserver.com/mods/skins.zip",
-            "https://yourserver.com/mods/weapons.zip",
-            "https://yourserver.com/mods/cars.zip"
-        )
-
         AlertDialog.Builder(requireContext())
             .setTitle("🛠️ اختر المود للتحميل")
             .setItems(mods) { _, which ->
@@ -460,7 +431,7 @@ class HomeFragment : Fragment() {
         chartPing.description.isEnabled = false
         chartPing.legend.isEnabled = false
         chartPing.xAxis.isEnabled = false
-        chartPing.axisLeft.isEnabled = false   // تم تصحيح الخطأ هنا (إلغاء الفاصلة ووضع =)
+        chartPing.axisLeft.isEnabled = false
         chartPing.axisRight.isEnabled = false
         chartPing.invalidate()
     }
