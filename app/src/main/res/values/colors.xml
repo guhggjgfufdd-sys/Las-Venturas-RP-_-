@@ -22,4 +22,14 @@
     <color name="white">#FFFFFF</color>
     <color name="gray">#8E8E93</color>
     <color name="green">#34C759</color>
+
+    <color name="purple_primary">#8B5CF6</color>
+<color name="purple_dark">#6D28D9</color>
+<color name="bg_dark">#0F0B1E</color>
+<color name="card_dark">#1A1530</color>
+<color name="card_dark_light">#231C40</color>
+<color name="text_white">#FFFFFF</color>
+<color name="text_gray">#9B94B0</color>
+<color name="online_green">#4ADE80</color>
+<color name="danger_red">#EF4444</color>
 </resources>
