@@ -145,10 +145,10 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // بدء التحميل الحقيقي للكاش
+        // بدء التحميل الاحترافي الحقيقي وفك الضغط والحفظ
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            startRealCacheDownloadAndExtract()
+            startProfessionalDownloadAndExtract()
         }
 
         // تحميل المود
@@ -160,19 +160,19 @@ class HomeFragment : Fragment() {
 
     // التحقق عما إذا كان الكاش مثبتاً مسبقاً لإخفاء بطاقة التحميل
     private fun checkCacheStatus() {
-        val targetDir = File(Environment.getExternalStorageDirectory(), "Android/data/$SAMP_PACKAGE")
-        if (targetDir.exists() && (targetDir.list()?.isNotEmpty() == true)) {
+        val targetDir = requireContext().getExternalFilesDir(null)
+        if (targetDir != null && targetDir.exists() && (targetDir.list()?.isNotEmpty() == true)) {
             cardDownloadCache.visibility = View.GONE
         } else {
             cardDownloadCache.visibility = View.VISIBLE
         }
     }
 
-    // الدالة المسؤولة عن التحميل الحقيقي، العداد السلس، وفك الضغط للمسار الصحيح
-    private fun startRealCacheDownloadAndExtract() {
+    // نظام التحميل الاحترافي مع عداد السرعة، الحفظ الدائم، وفك الضغط السلس
+    private fun startProfessionalDownloadAndExtract() {
         val progressDialog = ProgressDialog(requireContext()).apply {
-            setTitle("تحميل كاش SA-MP")
-            setMessage("جاري بدء التحميل...")
+            setTitle("📥 تحميل كاش SA-MP الاحترافي")
+            setMessage("جاري تهيئة التحميل...")
             setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
             isIndeterminate = false
             max = 100
@@ -190,78 +190,100 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                // حفظ الملف المؤقت في مجلد التحميلات
+                // حفظ الملف المؤقت بشكل آمن
                 val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 if (!downloadDir.exists()) downloadDir.mkdirs()
-                val zipFile = File(downloadDir, "samp_cache_temp.zip")
+                val zipFile = File(downloadDir, "samp_cache_pro.zip")
 
-                val output = FileOutputStream(zipFile)
-                val data = ByteArray(8192)
+                val outputStream = FileOutputStream(zipFile)
+                val data = ByteArray(16384) // زيادة حجم الـ Buffer لتحسين السرعة
                 var total: Long = 0
                 var count: Int
+                
+                var startTime = System.currentTimeMillis()
+                var lastTime = startTime
+                var lastTotal: Long = 0
 
                 while (input.read(data).also { count = it } != -1) {
                     total += count
-                    output.write(data, 0, count)
+                    outputStream.write(data, 0, count)
 
-                    if (fileLength > 0) {
-                        val progress = ((total * 100) / fileLength).toInt()
-                        val downloadedMB = total / (1024 * 1024)
-                        val totalMB = fileLength / (1024 * 1024)
-                        
-                        activity?.runOnUiThread {
-                            progressDialog.progress = progress
-                            progressDialog.setMessage("جاري التحميل: $downloadedMB MB / $totalMB MB ($progress%)")
+                    val currentTime = System.currentTimeMillis()
+                    // حساب السرعة كل 400 مللي ثانية
+                    if (currentTime - lastTime >= 400 || total == fileLength) {
+                        val timeElapsed = (currentTime - lastTime) / 1000.0
+                        val bytesRead = total - lastTotal
+                        val speedKBps = if (timeElapsed > 0) (bytesRead / 1024.0) / timeElapsed else 0.0
+                        val speedMBps = speedKBps / 1024.0
+
+                        lastTime = currentTime
+                        lastTotal = total
+
+                        if (fileLength > 0) {
+                            val progress = ((total * 100) / fileLength).toInt()
+                            val downloadedMB = total / (1024 * 1024)
+                            val totalMB = fileLength / (1024 * 1024)
+
+                            activity?.runOnUiThread {
+                                progressDialog.progress = progress
+                                progressDialog.setMessage(
+                                    "⚡ جاري التحميل باحترافية...\n" +
+                                            "📊 المنجز: $downloadedMB MB / $totalMB MB ($progress%)\n" +
+                                            "🚀 السرعة: ${String.format("%.2f", speedMBps)} MB/s"
+                                )
+                            }
                         }
                     }
                 }
 
-                output.flush()
-                output.close()
+                // ضمان الحفظ الثابت والدائم على الذاكرة الفيزيائية للجهاز
+                outputStream.flush()
+                outputStream.fd.sync()
+                outputStream.close()
                 input.close()
 
-                // بدء عملية فك الضغط ونقل الملفات للمسار الصحيح
+                // المرحلة الثانية: فك الضغط ونقل الملفات للمسار الصحيح المخصص للعبة
                 activity?.runOnUiThread {
                     progressDialog.isIndeterminate = true
-                    progressDialog.setMessage("جاري فك الضغط ونقل الملفات لمكانها الصحيح...")
+                    progressDialog.setMessage("📂 جاري فك الضغط وحفظ الملفات في مسارها الصحيح...")
                 }
 
-                // المسار الصحيح المخصص لملفات اللعبة وكاش السيرفر
-                val extractDir = File(Environment.getExternalStorageDirectory(), "Android/data/$SAMP_PACKAGE")
-                if (!extractDir.exists()) {
-                    extractDir.mkdirs()
+                // المسار الصحيح المخصص لقراءة ملفات اللعبة بواسطة اللاونشر
+                val targetDir = requireContext().getExternalFilesDir(null) ?: File(Environment.getExternalStorageDirectory(), "Android/data/com.umnicode.samp_launcher/files")
+                if (!targetDir.exists()) {
+                    targetDir.mkdirs()
                 }
 
-                unzip(zipFile, extractDir)
+                unzipAndSavePermanently(zipFile, targetDir)
 
-                // حذف الملف المضغوط المؤقت بعد الانتهاء
+                // حذف الملف المضغوط المؤقت بعد إتمام النقل والحفظ بنجاح
                 if (zipFile.exists()) {
                     zipFile.delete()
                 }
 
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "✅ تم التحميل وفك الضغط بنجاح!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "✅ تمت عملية التحميل، الفك والحفظ بنجاح تام!", Toast.LENGTH_LONG).show()
                     
-                    // الانتقال للواجهة الأساسية عبر إخفاء بطاقة التحميل وتحديث الواجهة
+                    // إخفاء بطاقة التحميل والانتقال للواجهة الأساسية للعبة
                     cardDownloadCache.visibility = View.GONE
                 }
 
             } catch (e: Exception) {
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "❌ حدث خطأ أثناء التحميل: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "❌ حدث خطأ: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
-    // دالة فك الضغط (ZipInputStream) لنقل الملفات كاملة وبكل هيكلتها الصحيحة
-    private fun unzip(zipFile: File, targetDirectory: File) {
+    // دالة فك الضغط والحفظ الدائم للملفات واستقرارها بالهيكلة الصحيحة
+    private fun unzipAndSavePermanently(zipFile: File, targetDirectory: File) {
         val zis = ZipInputStream(BufferedInputStream(FileInputStream(zipFile)))
         try {
             var zisEntry = zis.nextEntry
-            val buffer = ByteArray(4096)
+            val buffer = ByteArray(8192)
             while (zisEntry != null) {
                 val newFile = File(targetDirectory, zisEntry.name)
                 if (zisEntry.isDirectory) {
@@ -273,6 +295,8 @@ class HomeFragment : Fragment() {
                     while (zis.read(buffer).also { count = it } != -1) {
                         fout.write(buffer, 0, count)
                     }
+                    fout.flush()
+                    fout.fd.sync()
                     fout.close()
                 }
                 zis.closeEntry()
