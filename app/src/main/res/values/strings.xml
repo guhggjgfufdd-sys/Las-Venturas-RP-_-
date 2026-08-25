@@ -29,6 +29,7 @@
 
     <string name="server_players" formatted="false">اللاعبين المتصلين: %d/%d</string>
     <string name="server_part_ip" formatted="false">%s : %d</string>
+    <string name="server_port_ip" formatted="false">%s : %d</string>
     <string name="server_time" formatted="false">الوقت: %s</string>
     <string name="server_mode" formatted="false">الطور: %s</string>
     <string name="server_map" formatted="false">الخريطة: %s</string>
@@ -41,7 +42,7 @@
     <string name="server_status_online">أونلاين</string>
     <string name="server_status_offline">أوفلاين</string>
     <string name="server_status_not_found">السيرفر غير موجود</string>
-    <string name="server_status_failed_to_fetch">فشل يجلب البيانات</string>
+    <string name="server_status_failed_to_fetch">فشل في جلب البيانات</string>
     <string name="server_status_incorrect_ip">عنوان IP غير صحيح</string>
 
     <string name="settings_nickname_text">تعديل اسم اللاعب</string>
