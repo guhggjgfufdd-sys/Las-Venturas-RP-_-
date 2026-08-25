@@ -1,30 +1,25 @@
 package com.umnicode.samp_launcher
 
-import android.Manifest
+import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class PermissionRequest(val Permission: String, var Callbacks: MutableList<PermissionRequestCallback>)
-
 class MainActivity : AppCompatActivity() {
-    private lateinit var PermissionRequests: MutableList<PermissionRequest>
-    private var PermissionRequestID: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        this.PermissionRequests = mutableListOf()
 
         try {
             supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -54,22 +49,25 @@ class MainActivity : AppCompatActivity() {
                 navView.setupWithNavController(navController)
             }
         } catch (e: Throwable) {
-            Log.e("MainActivity", "Error initializing views/navigation: ${e.message}")
+            Log.e("MainActivity", "Error initializing navigation: ${e.message}")
         }
 
-        // طلب الصلاحيات بأمان عند بدء التشغيل
-        try {
-            RequestStoragePermission(object : PermissionRequestCallback {
-                override fun Finished(isGranted: Boolean) {
-                    if (isGranted) {
-                        Log.i("Permissions", "Storage permissions granted.")
-                    } else {
-                        Log.w("Permissions", "Storage permissions denied.")
-                    }
+        // طلب إذن الملفات الشامل لأندرويد الحديث
+        checkStoragePermission()
+    }
+
+    private fun checkStoragePermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    intent.data = Uri.parse("package:$packageName")
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    val intent = Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION)
+                    startActivity(intent)
                 }
-            })
-        } catch (e: Throwable) {
-            Log.e("MainActivity", "Error requesting permissions: ${e.message}")
+            }
         }
     }
 
@@ -84,82 +82,5 @@ class MainActivity : AppCompatActivity() {
                 Log.e("LauncherApplication", "Error in ReCheckInstallResources: ${e.message}")
             }
         }
-    }
-
-    private fun FindPermissionRequest(Permission: String): PermissionRequest? {
-        for (LPermission in this.PermissionRequests) {
-            if (LPermission.Permission == Permission) return LPermission
-        }
-        return null
-    }
-
-    fun RequestPermission(Permission: String, Callback: PermissionRequestCallback) {
-        try {
-            if (ActivityCompat.checkSelfPermission(this, Permission) == PackageManager.PERMISSION_GRANTED) {
-                Callback.Finished(true)
-                return
-            }
-
-            val PermissionReq: PermissionRequest? = this.FindPermissionRequest(Permission)
-
-            if (PermissionReq != null) {
-                PermissionReq.Callbacks.add(Callback)
-            } else {
-                this.PermissionRequests.add(PermissionRequest(Permission, mutableListOf(Callback)))
-                ActivityCompat.requestPermissions(this, arrayOf(Permission), this.PermissionRequestID)
-                this.PermissionRequestID++
-            }
-        } catch (e: Throwable) {
-            Log.e("MainActivity", "Error in RequestPermission: ${e.message}")
-            Callback.Finished(false)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        try {
-            for (i in permissions.indices) {
-                for (Index in PermissionRequests.indices) {
-                    if (PermissionRequests[Index].Permission == permissions[i]) {
-                        for (Callback in PermissionRequests[Index].Callbacks) {
-                            Callback.Finished(grantResults[i] == PackageManager.PERMISSION_GRANTED)
-                        }
-                        this.PermissionRequests.removeAt(Index)
-                        break
-                    }
-                }
-            }
-        } catch (e: Throwable) {
-            Log.e("MainActivity", "Error in onRequestPermissionsResult: ${e.message}")
-        }
-    }
-
-    fun RequestStoragePermission(Callback: PermissionRequestCallback) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            this.RequestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, object : PermissionRequestCallback {
-                override fun Finished(isGrantedW: Boolean) {
-                    RequestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, object : PermissionRequestCallback {
-                        override fun Finished(isGrantedR: Boolean) {
-                            Callback.Finished(isGrantedR && isGrantedW)
-                        }
-                    })
-                }
-            })
-        } else {
-            Callback.Finished(true)
-        }
-    }
-
-    fun IsStorageReadPermissionsGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun IsStorageWritePermissionsGranted(): Boolean {
-        return ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun IsStoragePermissionsGranted(): Boolean {
-        return this.IsStorageReadPermissionsGranted() && this.IsStorageWritePermissionsGranted()
     }
 }
