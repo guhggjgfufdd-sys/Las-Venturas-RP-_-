@@ -8,8 +8,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
@@ -26,11 +24,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import com.umnicode.samp_launcher.LauncherApplication
 import com.umnicode.samp_launcher.R
-import com.umnicode.samp_launcher.core.SAMP.Enums.SAMPPackageStatus
-import com.umnicode.samp_launcher.core.SAMP.SAMPInstaller
 import com.umnicode.samp_launcher.core.ServerConfig
 import com.umnicode.samp_launcher.core.ServerResolveCallback
 import java.io.File
@@ -44,18 +39,14 @@ class HomeFragment : Fragment() {
     private lateinit var tvNickname: TextView
     private lateinit var btnEditNick: Button
     private lateinit var btnJoinServer: MaterialButton
-    private lateinit var btnDiscord: Button
-    private lateinit var btnLogin: Button
-    private lateinit var btnInstallSamp: MaterialButton
+    private lateinit var btnDiscord: MaterialButton
     private lateinit var btnRefreshStatus: ImageButton
     private lateinit var chartPing: LineChart
     private lateinit var cardDownloadCache: CardView
     private lateinit var cardDownloadMod: CardView
-    private lateinit var cardInstallSamp: MaterialCardView
     private lateinit var tvPing: TextView
     private lateinit var tvServerStatus: TextView
     private lateinit var tvPlayersCount: TextView
-    private lateinit var tvServerInfo: TextView
 
     private val handler = Handler(Looper.getMainLooper())
     private val refreshRunnable = object : Runnable {
@@ -66,10 +57,12 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
+        // ملاحظة: هذي القيم تُستخدم داخليًا فقط لفحص/فتح السيرفر ولا تُعرض بالواجهة
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
         const val SAMP_PACKAGE = "com.rockstargames.gtasa"
+        private const val HIDDEN_NAME = "••••••_"
     }
 
     override fun onCreateView(
@@ -83,8 +76,9 @@ class HomeFragment : Fragment() {
         setupListeners()
         setupPingChart()
         loadNickname()
-        checkSAMPStatus()
         checkServerStatus()
+        animateEntrance(view)
+        pulseStatus()
 
         return view
     }
@@ -92,7 +86,6 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         handler.post(refreshRunnable)
-        checkSAMPStatus() // تحقق مرة ثانية لما يرجع من تثبيت
     }
 
     override fun onPause() {
@@ -105,17 +98,13 @@ class HomeFragment : Fragment() {
         btnEditNick = view.findViewById(R.id.btn_edit_nick)
         btnJoinServer = view.findViewById(R.id.btn_join_server)
         btnDiscord = view.findViewById(R.id.btn_discord)
-        btnLogin = view.findViewById(R.id.btn_login)
-        btnInstallSamp = view.findViewById(R.id.btn_install_samp)
         btnRefreshStatus = view.findViewById(R.id.btn_refresh_status)
         chartPing = view.findViewById(R.id.chart_ping)
         cardDownloadCache = view.findViewById(R.id.card_download_cache)
         cardDownloadMod = view.findViewById(R.id.card_download_mod)
-        cardInstallSamp = view.findViewById(R.id.card_install_samp)
         tvPing = view.findViewById(R.id.tv_ping)
         tvServerStatus = view.findViewById(R.id.tv_server_status)
         tvPlayersCount = view.findViewById(R.id.tv_players_count)
-        tvServerInfo = view.findViewById(R.id.tv_server_info)
     }
 
     private fun setupListeners() {
@@ -124,27 +113,16 @@ class HomeFragment : Fragment() {
             showEditNicknameDialog()
         }
 
-        // 🔥 دخول السيرفر — يفتح SA-MP مباشرة
+        // 🎮 دخول السيرفر مباشرة
         btnJoinServer.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             joinServer()
         }
 
-        // ديسكورد
+        // 💬 زر الديسكورد الوحيد
         btnDiscord.setOnClickListener {
-            openUrl(DISCORD_URL)
-        }
-
-        // دخول
-        btnLogin.setOnClickListener {
-            Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
-        }
-
-        // تثبيت SA-MP
-        btnInstallSamp.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            val app = requireActivity().application as LauncherApplication
-            app.Installer?.Install(requireActivity())
+            openUrl(DISCORD_URL)
         }
 
         // تحديث حالة السيرفر يدوياً
@@ -168,7 +146,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // 🎮 فتح السيرفر مباشرة
+    // فتح السيرفر مباشرة 🎮 (بدون عرض أي بطاقة تثبيت SA-MP بالواجهة)
     private fun joinServer() {
         val pm = requireActivity().packageManager
         val isInstalled = try {
@@ -179,23 +157,18 @@ class HomeFragment : Fragment() {
         }
 
         if (!isInstalled) {
-            // SA-MP مو مثبت — اعرض رسالة
-            Toast.makeText(context, "⚠️ SA-MP غير مثبت! اضغط على \"تثبيت الآن\" بالأعلى", Toast.LENGTH_LONG).show()
-            cardInstallSamp.visibility = View.VISIBLE
+            Toast.makeText(context, "⚠️ SA-MP غير مثبت على جهازك", Toast.LENGTH_LONG).show()
             return
         }
 
-        // افتح SA-MP مع IP السيرفر
         try {
             val intent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
             if (intent != null) {
-                // نرسل IP كـ Extra إذا الـ SAMP يدعمها
                 intent.putExtra("ip", SERVER_IP)
                 intent.putExtra("port", SERVER_PORT)
                 startActivity(intent)
                 Toast.makeText(context, "🎮 جاري الدخول لـ Las Venturas RP...", Toast.LENGTH_SHORT).show()
             } else {
-                // fallback: افتح بالـ samp:// URL
                 val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl)))
             }
@@ -204,25 +177,7 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // التحقق إذا SA-MP مثبت
-    private fun checkSAMPStatus() {
-        val status = SAMPInstaller.IsInstalled(requireActivity().packageManager, resources)
-        when (status) {
-            SAMPPackageStatus.FOUND -> {
-                cardInstallSamp.visibility = View.GONE
-            }
-            SAMPPackageStatus.CACHE_NOT_FOUND -> {
-                cardInstallSamp.visibility = View.VISIBLE
-                btnInstallSamp.text = "تثبيت الكاش"
-            }
-            SAMPPackageStatus.NOT_FOUND -> {
-                cardInstallSamp.visibility = View.VISIBLE
-                btnInstallSamp.text = "تثبيت SA-MP"
-            }
-        }
-    }
-
-    // فحص حالة السيرفر
+    // فحص حالة السيرفر (بدون عرض الـ IP والبورت بالواجهة)
     private fun checkServerStatus() {
         val app = requireActivity().application as LauncherApplication
         if (app.userConfig.PingTimeout <= 0) {
@@ -274,7 +229,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun showModDownloadDialog() {
-        val mods = arrayOf("مود السيارات", "مود الأسلحة", "مود الشخصيات", "مود الخريطة الكاملة")
+        val mods = arrayOf("مود الخريطة الكاملة", "مود الشخصيات", "مود الأسلحة", "مود السيارات")
         val urls = arrayOf(
             "https://yourserver.com/mods/cars.zip",
             "https://yourserver.com/mods/weapons.zip",
@@ -283,7 +238,7 @@ class HomeFragment : Fragment() {
         )
 
         AlertDialog.Builder(requireContext())
-            .setTitle("🔧 اختر المود للتحميل")
+            .setTitle("🛠️ اختر المود للتحميل")
             .setItems(mods) { _, which ->
                 downloadFile(urls[which], "mod_${mods[which]}.zip", "تحميل ${mods[which]}")
             }
@@ -291,9 +246,11 @@ class HomeFragment : Fragment() {
             .show()
     }
 
+    // الاسم يظل محفوظًا بالنظام لكن لا يُعرض بالواجهة أبدًا
     private fun showEditNicknameDialog() {
+        val app = requireActivity().application as LauncherApplication
         val editText = EditText(requireContext()).apply {
-            setText(tvNickname.text)
+            setText(app.userConfig.Nickname)
             hint = "أدخل اسمك في اللعبة"
         }
 
@@ -303,11 +260,10 @@ class HomeFragment : Fragment() {
             .setPositiveButton("حفظ") { _, _ ->
                 val newName = editText.text.toString().trim()
                 if (newName.isNotEmpty()) {
-                    tvNickname.text = newName
-                    val app = requireActivity().application as LauncherApplication
                     app.userConfig.Nickname = newName
                     app.userConfig.Save()
-                    Toast.makeText(context, "✅ تم الحفظ!", Toast.LENGTH_SHORT).show()
+                    tvNickname.text = HIDDEN_NAME
+                    Toast.makeText(context, "✅ تم الحفظ", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("إلغاء", null)
@@ -368,7 +324,7 @@ class HomeFragment : Fragment() {
 
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "✅ تم التحميل!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "✅ اتم التحميل!", Toast.LENGTH_LONG).show()
                 }
 
             } catch (e: Exception) {
@@ -403,10 +359,37 @@ class HomeFragment : Fragment() {
         chartPing.invalidate()
     }
 
+    // الاسم يبقى مخفي دائمًا بالواجهة (اسم + شرطة فقط، بدون كتابة الاسم الحقيقي)
     private fun loadNickname() {
-        val app = requireActivity().application as LauncherApplication
-        if (app.userConfig.Nickname.isNotEmpty()) {
-            tvNickname.text = app.userConfig.Nickname
-        }
+        tvNickname.text = HIDDEN_NAME
+    }
+
+    // ✨ دخول ناعم للبطاقات عند فتح الشاشة
+    private fun animateEntrance(view: View) {
+        view.alpha = 0f
+        view.translationY = 50f
+        view.animate()
+            .alpha(1f)
+            .translationY(0f)
+            .setStartDelay(80)
+            .setDuration(450)
+            .start()
+    }
+
+    // ✨ نبضة خفيفة على نص حالة السيرفر تعطي إحساس "حي"
+    private fun pulseStatus() {
+        if (!isAdded) return
+        tvServerStatus.animate()
+            .alpha(0.45f)
+            .setDuration(900)
+            .withEndAction {
+                if (!isAdded) return@withEndAction
+                tvServerStatus.animate()
+                    .alpha(1f)
+                    .setDuration(900)
+                    .withEndAction { pulseStatus() }
+                    .start()
+            }
+            .start()
     }
 }
