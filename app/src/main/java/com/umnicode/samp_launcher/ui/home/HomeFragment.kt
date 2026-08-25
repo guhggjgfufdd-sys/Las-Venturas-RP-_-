@@ -80,7 +80,6 @@ class HomeFragment : Fragment() {
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
-        const val SAMP_PACKAGE = "com.rockstargames.gtasa"
         private const val HIDDEN_NAME = "••••••_"
     }
 
@@ -196,7 +195,6 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                // التخزين في المجلد الخاص بالتطبيق لتفادي رفض الصلاحيات (Permission Denied)
                 val targetDir = requireContext().getExternalFilesDir(null) ?: requireContext().filesDir
                 if (!targetDir.exists()) targetDir.mkdirs()
                 val zipFile = File(targetDir, "samp_cache_pro.zip")
@@ -302,39 +300,44 @@ class HomeFragment : Fragment() {
 
     private fun joinServer() {
         try {
-            val pm = requireActivity().packageManager
-            
-            // 1. المحاولة الأولى: فتح حزمة GTA SA المباشرة
-            val launchIntent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
-            if (launchIntent != null) {
-                launchIntent.putExtra("ip", SERVER_IP)
-                launchIntent.putExtra("port", SERVER_PORT)
-                startActivity(launchIntent)
-                Toast.makeText(context, "🎮 جاري الدخول إلى السيرفر...", Toast.LENGTH_SHORT).show()
-                return
-            }
+            val context = requireContext()
+            val app = requireActivity().application as LauncherApplication
 
-            // 2. المحاولة الثانية: تشغيل عبر بروتوكول samp://
-            val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
-            val sampIntent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl)).apply {
+            // تشغيل محرك اللعبة المدمج في OpenSAMP Launcher مباشرة
+            val intent = Intent().apply {
+                setClassName(context.packageName, "com.nvidia.gtasa.GTASA")
+                putExtra("ip", SERVER_IP)
+                putExtra("port", SERVER_PORT)
+                putExtra("nickname", app.userConfig.Nickname)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            
-            if (sampIntent.resolveActivity(pm) != null) {
-                startActivity(sampIntent)
-                Toast.makeText(context, "🎮 جاري فتح المشغل...", Toast.LENGTH_SHORT).show()
-                return
+
+            if (intent.resolveActivity(context.packageManager) != null) {
+                startActivity(intent)
+                Toast.makeText(context, "🎮 جاري دخول اللعبة...", Toast.LENGTH_SHORT).show()
+            } else {
+                // المحاولة الثانية عبر النشاط الداخلي البديل في مشروع OpenSAMP
+                val altIntent = Intent().apply {
+                    setClassName(context.packageName, "com.umnicode.samp_launcher.game.GTASA")
+                    putExtra("ip", SERVER_IP)
+                    putExtra("port", SERVER_PORT)
+                    putExtra("nickname", app.userConfig.Nickname)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                
+                if (altIntent.resolveActivity(context.packageManager) != null) {
+                    startActivity(altIntent)
+                    Toast.makeText(context, "🎮 جاري دخول اللعبة...", Toast.LENGTH_SHORT).show()
+                } else {
+                    // تشغيل رابط البروتوكول المباشر
+                    val sampIntent = Intent(Intent.ACTION_VIEW, Uri.parse("samp://$SERVER_IP:$SERVER_PORT")).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(sampIntent)
+                }
             }
-
-            // 3. تنبيه المستخدم في حال عدم التثبيت
-            AlertDialog.Builder(requireContext())
-                .setTitle("⚠️ مشغل اللعبة غير متاح")
-                .setMessage("لم يتم العثور على لعبة GTA SA مثبتة على جهازك ($SAMP_PACKAGE).\nيرجى تثبيت اللعبة أولاً لتمكن من الدخول.")
-                .setPositiveButton("حسناً", null)
-                .show()
-
         } catch (e: Exception) {
-            Toast.makeText(context, "خطأ أثناء التشغيل: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "خطأ في التشغيل: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 
