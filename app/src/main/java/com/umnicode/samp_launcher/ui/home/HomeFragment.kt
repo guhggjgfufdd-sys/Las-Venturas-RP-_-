@@ -29,7 +29,6 @@ import com.umnicode.samp_launcher.LauncherApplication
 import com.umnicode.samp_launcher.R
 import com.umnicode.samp_launcher.core.ServerConfig
 import com.umnicode.samp_launcher.core.ServerResolveCallback
-import com.umnicode.samp_launcher.ui.installer.InstallActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -116,7 +115,7 @@ class HomeFragment : Fragment() {
             showEditNicknameDialog()
         }
 
-        // دخول السيرفر مباشرة من الزر الفرعي
+        // دخول السيرفر مباشرة
         btnJoinServer.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             joinServer()
@@ -141,16 +140,11 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // تحميل الكاش
+        // تحميل الكاش باستخدام المحمل الخاص بالتطبيق
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val app = requireActivity().application as LauncherApplication
-            if (app.Installer != null) {
-                app.Installer?.InstallOnlyCache(requireActivity())
-            } else {
-                val intent = Intent(requireContext(), InstallActivity::class.java)
-                startActivity(intent)
-            }
+            app.Installer?.InstallOnlyCache(requireActivity())
         }
 
         // تحميل المود
