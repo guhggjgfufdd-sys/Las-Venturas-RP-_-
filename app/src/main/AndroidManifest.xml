@@ -3,17 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.umnicode.samp_launcher">
 
-    <!-- أذونات الاتصال والإنترنت -->
+    <!-- أذونات الشبكة والإنترنت -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-    <!-- أذونات الوصول للذاكرة والتخزين -->
+    <!-- أذونات الوصول للتخزين والملفات -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
-    <!-- إذن تثبيت التحديثات وملفات APK -->
+    <!-- إذن تثبيت ملفات APK الخاصة باللعبة -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
@@ -25,8 +26,10 @@
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true"
         android:supportsRtl="true"
+        android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
+        <!-- مزود الملفات لتثبيت الـ APK والتحديثات -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -37,9 +40,11 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <!-- الشاشة الرئيسية للانشر -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -50,6 +55,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
     </application>
 
 </manifest>
