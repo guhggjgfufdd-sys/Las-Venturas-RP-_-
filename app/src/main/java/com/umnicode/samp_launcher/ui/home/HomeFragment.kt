@@ -65,7 +65,6 @@ class HomeFragment : Fragment() {
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
-        const val SAMP_PACKAGE = "com.rockstargames.gtasa"
         private const val HIDDEN_NAME = "••••••_"
     }
 
@@ -199,7 +198,6 @@ class HomeFragment : Fragment() {
                     outputStream.write(data, 0, count)
 
                     val currentTime = System.currentTimeMillis()
-                    // تم تصحيح مقارنة total مع fileLength هنا بتحويله إلى Long
                     if (currentTime - lastTime >= 400 || total == fileLength.toLong()) {
                         val timeElapsed = (currentTime - lastTime) / 1000.0
                         val bytesRead = total - lastTotal
@@ -290,33 +288,15 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // تم تعديل هذه الدالة لتجاوز الفحص والاتصال المباشر بالسيرفر دون ظهور رسالة "غير مثبت"
     private fun joinServer() {
-        val pm = requireActivity().packageManager
-        val isInstalled = try {
-            pm.getPackageInfo(SAMP_PACKAGE, 0)
-            true
-        } catch (e: Exception) {
-            false
-        }
-
-        if (!isInstalled) {
-            Toast.makeText(context, "⚠️ SA-MP غير مثبت على جهازك", Toast.LENGTH_LONG).show()
-            return
-        }
-
         try {
-            val intent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
-            if (intent != null) {
-                intent.putExtra("ip", SERVER_IP)
-                intent.putExtra("port", SERVER_PORT)
-                startActivity(intent)
-                Toast.makeText(context, "🎮 جاري الدخول لـ Las Venturas RP...", Toast.LENGTH_SHORT).show()
-            } else {
-                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl)))
-            }
+            val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
+            startActivity(intent)
+            Toast.makeText(context, "🎮 جاري الدخول إلى السيرفر...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Toast.makeText(context, "خطأ: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "تعذر الدخول: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
