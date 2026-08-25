@@ -21,7 +21,6 @@ import com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
 class HomeFragment : Fragment() {
     private lateinit var rootView: View
 
-    // ✅ بيانات سيرفرك (Las Venturas RP) من Lemehost
     private val SERVER_IP = "142.132.203.47"
     private val SERVER_PORT = "21299"
 
@@ -43,7 +42,6 @@ class HomeFragment : Fragment() {
         val portEditText: EditText = this.rootView.findViewById(R.id.port)
         val passwordEditText: EditText = this.rootView.findViewById(R.id.password)
 
-        // 🔒 تثبيت IP والبورت تلقائيًا على سيرفرك (المستخدم ما يقدر يشوفهم أو يغيرهم)
         ipEditText.setText(SERVER_IP)
         portEditText.setText(SERVER_PORT)
 
@@ -73,6 +71,15 @@ class HomeFragment : Fragment() {
         val playButton: PlayButton = this.rootView.findViewById(R.id.play_btn) as PlayButton
         playButton.SetOnSAMPLaunchCallback {
             println("Launch SAMP")
+        }
+
+        val discordCard: View = this.rootView.findViewById(R.id.discord_card)
+        discordCard.setOnClickListener {
+            val intent = android.content.Intent(
+                android.content.Intent.ACTION_VIEW,
+                android.net.Uri.parse("https://discord.gg/eZFKQ83ke")
+            )
+            startActivity(intent)
         }
 
         this.updateServerConfig()
