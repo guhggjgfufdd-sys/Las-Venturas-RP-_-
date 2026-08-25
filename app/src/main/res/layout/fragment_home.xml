@@ -13,9 +13,8 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- العنوان الرئيسي -->
+        <!-- العنوان -->
         <TextView
-            android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Las Venturas RP - OpenSAM قاذفة"
@@ -25,7 +24,7 @@
             android:gravity="center"
             android:layout_marginBottom="20dp"/>
 
-        <!-- ====== قسم التحميلات المعدل ====== -->
+        <!-- ====== قسم التحميلات (زرين بجانب بعض) ====== -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +41,7 @@
             android:weightSum="2"
             android:layout_marginBottom="20dp">
 
-            <!-- زر تحميل الكاش (الباقي) -->
+            <!-- زر تحميل الكاش -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_download_cache"
                 android:layout_width="0dp"
@@ -64,7 +63,7 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_download"
+                        android:src="@android:drawable/stat_sys_download"
                         app:tint="@color/gold"/>
 
                     <TextView
@@ -84,7 +83,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- زر تحميل المود الجديد -->
+            <!-- زر تحميل المود (الجديد) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/card_download_mod"
                 android:layout_width="0dp"
@@ -106,7 +105,7 @@
                     <ImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
-                        android:src="@drawable/ic_mod"
+                        android:src="@android:drawable/ic_menu_manage"
                         app:tint="@color/purple"/>
 
                     <TextView
@@ -156,7 +155,7 @@
                 <ImageView
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/ic_person"
+                    android:src="@android:drawable/ic_menu_myplaces"
                     app:tint="@color/gray"/>
 
                 <LinearLayout
@@ -307,7 +306,6 @@
                         android:layout_weight="1"
                         android:text="رابط ديسكورد"
                         android:textColor="@color/white"
-                        app:icon="@drawable/ic_discord"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
                     <Button
@@ -318,7 +316,6 @@
                         android:layout_marginStart="8dp"
                         android:text="دخول"
                         android:textColor="@color/white"
-                        app:icon="@drawable/ic_login"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
                 </LinearLayout>
             </LinearLayout>
@@ -343,7 +340,7 @@
                 <ImageView
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/logo_server"
+                    android:src="@android:drawable/ic_menu_gallery"
                     android:layout_marginBottom="12dp"/>
 
                 <TextView
