@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView 
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -30,72 +30,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="قاذفة OpenSAM"
+            android:text="قائدة OpenSAM"
             android:textColor="@color/gray"
             android:textSize="14sp"
             android:gravity="center"
             android:layout_marginBottom="16dp"/>
-
-        <!-- ====== قسم تثبيت SA-MP (يظهر بس إذا مو مثبت) ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card_install_samp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="#2D1B1B"
-            app:cardCornerRadius="16dp"
-            app:strokeColor="@color/colorError"
-            app:strokeWidth="1.5dp"
-            app:cardElevation="8dp"
-            android:layout_marginBottom="16dp"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:src="@android:drawable/ic_dialog_alert"
-                    app:tint="@color/colorError"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SA-MP غير مثبت"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="15sp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="مطلوب تثبيت SA-MP للدخول للسيرفر"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp"/>
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_install_samp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="تثبيت الآن"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/colorError"
-                    app:cornerRadius="12dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
         <!-- ====== قسم التحميلات ====== -->
         <TextView
@@ -208,7 +147,7 @@
 
         </LinearLayout>
 
-        <!-- ====== حالة السيرفر + زر الدخول (الجديد) ====== -->
+        <!-- ====== حالة السيرفر + زر الدخول (بدون IP/بورت ظاهر، وبدون بطاقة تثبيت SA-MP) ====== -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -261,7 +200,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"/>
 
-                <!-- عدد اللاعبين و Ping -->
+                <!-- Ping و عدد اللاعبين -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -301,17 +240,7 @@
                     android:background="#3A3A5C"
                     android:layout_marginVertical="12dp"/>
 
-                <!-- IP السيرفر -->
-                <TextView
-                    android:id="@+id/tv_server_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="142.132.203.47:21299"
-                    android:textColor="@color/gray"
-                    android:textSize="13sp"
-                    android:layout_gravity="center"/>
-
-                <!-- 🔥 زر دخول السيرفر (المكان الجديد المناسب) -->
+                <!-- 🎮 زر دخول السيرفر -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_join_server"
                     android:layout_width="match_parent"
@@ -327,7 +256,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ====== اسم المستخدم ====== -->
+        <!-- ====== اسم المستخدم (مخفي دائمًا) ====== -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -359,7 +288,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="اسم المستخدم"
+                        android:text="اللاعب"
                         android:textColor="@color/white"
                         android:textStyle="bold"
                         android:textSize="13sp"/>
@@ -368,9 +297,10 @@
                         android:id="@+id/tv_nickname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="YourInGameNick"
+                        android:text="••••••_"
                         android:textColor="@color/gold"
-                        android:textSize="15sp"/>
+                        android:textSize="15sp"
+                        android:letterSpacing="0.1"/>
                 </LinearLayout>
 
                 <Button
@@ -384,48 +314,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ====== الأخبار ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="12dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="14dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📰 الأخبار والتحديثات"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="V3.2 - آخر تحديث: 24/8/2026"
-                    android:textColor="@color/gold"
-                    android:layout_marginTop="6dp"
-                    android:textSize="13sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="آخر تحديث امتشية طلسمة و بعدك المخبأل..."
-                    android:textColor="@color/gray"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ====== خلاصة المجتمع ====== -->
+        <!-- ====== خلاصة المجتمع: زر ديسكورد واحد فقط ====== -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -456,33 +345,17 @@
                     android:textSize="12sp"
                     android:layout_marginTop="3dp"/>
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_discord"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <Button
-                        android:id="@+id/btn_discord"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="رابط ديسكورد"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-                    <Button
-                        android:id="@+id/btn_login"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="دخول"
-                        android:textColor="@color/white"
-                        android:textSize="12sp"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-                </LinearLayout>
+                    android:layout_height="52dp"
+                    android:text="💬 دخول الديسكورد"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:textSize="15sp"
+                    android:layout_marginTop="12dp"
+                    app:backgroundTint="#5865F2"
+                    app:cornerRadius="14dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
