@@ -30,7 +30,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val sharedPreferences: SharedPreferences? = this.context?.getSharedPreferences("HomeFragment", Context.MODE_PRIVATE)
-        val preferencesEditor: SharedPreferences.Editor? = sharedPreferences?.edit()
 
         this.rootView = inflater.inflate(R.layout.fragment_home, container, false)
 
@@ -38,29 +37,12 @@ class HomeFragment : Fragment() {
         val launcherApplication: LauncherApplication = activity?.application as LauncherApplication
         nicknameText.setText(launcherApplication.userConfig.Nickname)
 
-        val passwordEditText: EditText = this.rootView.findViewById(R.id.password)
-
-        if (sharedPreferences != null) {
-            passwordEditText.setText(sharedPreferences.getString(R.id.password.toString(), ""))
-        }
-
         nicknameText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 launcherApplication.userConfig.Nickname = s.toString()
             }
             override fun afterTextChanged(s: Editable?) {}
-        })
-
-        passwordEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                preferencesEditor?.putString(R.id.password.toString(), s.toString())
-                preferencesEditor?.apply()
-            }
-            override fun afterTextChanged(s: Editable?) {
-                updateServerConfig()
-            }
         })
 
         val playButton: PlayButton = this.rootView.findViewById(R.id.play_btn) as PlayButton
@@ -81,21 +63,38 @@ class HomeFragment : Fragment() {
         return this.rootView
     }
 
+    private fun setStatusBadge(text: String, backgroundRes: Int, textColor: Int) {
+        val badge: TextView = this.rootView.findViewById(R.id.serverStatusBadge)
+        badge.text = text
+        badge.setBackgroundResource(backgroundRes)
+        badge.setTextColor(textColor)
+    }
+
     private fun updateServerConfig() {
         val userConfig = (activity?.application as LauncherApplication).userConfig
+
+        setStatusBadge("● جاري التحقق", R.drawable.status_pending_bg, 0xFFFFC107.toInt())
 
         ServerConfig.Resolve(SERVER_IP, SERVER_PORT.toInt(), userConfig.PingTimeout, this.context, object : ServerResolveCallback {
             override fun OnFinish(OutConfig: ServerConfig?) {
                 val serverView: ServerView = rootView.findViewById(R.id.server_view)
-                serverView.SetServer(OutConfig)
 
-                val playButton: PlayButton = rootView.findViewById(R.id.play_btn) as PlayButton
-                playButton.SetServerConfig(OutConfig)
+                if (OutConfig != null) {
+                    serverView.SetServer(OutConfig)
+                    setStatusBadge("● أونلاين", R.drawable.status_online_bg, 0xFF4CAF50.toInt())
+
+                    val playButton: PlayButton = rootView.findViewById(R.id.play_btn) as PlayButton
+                    playButton.SetServerConfig(OutConfig)
+                } else {
+                    setStatusBadge("● صيانة حالياً", R.drawable.status_offline_bg, 0xFFE53935.toInt())
+                }
             }
 
             override fun OnPingFinish(OutConfig: ServerConfig?) {
                 val serverView: ServerView = rootView.findViewById(R.id.server_view)
-                serverView.SetServer(OutConfig)
+                if (OutConfig != null) {
+                    serverView.SetServer(OutConfig)
+                }
             }
         })
     }
