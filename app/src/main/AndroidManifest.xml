@@ -13,8 +13,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage" />
 
-    <!-- الخاصة بتثبيت APK إن كانت ملفات -->
+    <!-- الخاصة بتثبيت APK -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!-- السماح للتطبيق برؤية اللعبة والروابط في أندرويد 11 فما فوق -->
+    <queries>
+        <package android:name="com.rockstargames.gtasa" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="samp" />
+        </intent>
+    </queries>
 
     <application
         android:name=".LauncherApplication"
@@ -28,7 +37,7 @@
         android:hardwareAccelerated="true"
         android:theme="@style/AppTheme">
 
-        <!-- والتحذيرات APK مزود الملفات لتثبيت الـ -->
+        <!-- مزود الملفات لتثبيت الـ APK -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -39,7 +48,7 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <!-- الشاشة الرئيسية لللانشر -->
+        <!-- الشاشة الرئيسية للانشر -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
