@@ -18,6 +18,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
@@ -28,6 +29,7 @@ import com.umnicode.samp_launcher.LauncherApplication
 import com.umnicode.samp_launcher.R
 import com.umnicode.samp_launcher.core.ServerConfig
 import com.umnicode.samp_launcher.core.ServerResolveCallback
+import com.umnicode.samp_launcher.ui.installer.InstallActivity
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -39,6 +41,7 @@ class HomeFragment : Fragment() {
     private lateinit var tvNickname: TextView
     private lateinit var btnEditNick: Button
     private lateinit var btnJoinServer: MaterialButton
+    private var btnEnterGame: MaterialButton? = null
     private lateinit var btnDiscord: MaterialButton
     private lateinit var btnRefreshStatus: ImageButton
     private lateinit var chartPing: LineChart
@@ -57,7 +60,6 @@ class HomeFragment : Fragment() {
     }
 
     companion object {
-        // ملاحظة: هذي القيم تُستخدم داخليًا فقط لفحص/فتح السيرفر ولا تُعرض بالواجهة
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
@@ -97,6 +99,7 @@ class HomeFragment : Fragment() {
         tvNickname = view.findViewById(R.id.tv_nickname)
         btnEditNick = view.findViewById(R.id.btn_edit_nick)
         btnJoinServer = view.findViewById(R.id.btn_join_server)
+        btnEnterGame = view.findViewById(R.id.btn_enter_game)
         btnDiscord = view.findViewById(R.id.btn_discord)
         btnRefreshStatus = view.findViewById(R.id.btn_refresh_status)
         chartPing = view.findViewById(R.id.chart_ping)
@@ -113,13 +116,19 @@ class HomeFragment : Fragment() {
             showEditNicknameDialog()
         }
 
-        // 🎮 دخول السيرفر مباشرة
+        // دخول السيرفر مباشرة من الزر الفرعي
         btnJoinServer.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             joinServer()
         }
 
-        // 💬 زر الديسكورد الوحيد
+        // دخول السيرفر من الزر الرئيسي الكبير (إن وجد)
+        btnEnterGame?.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            joinServer()
+        }
+
+        // زر الديسكورد
         btnDiscord.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             openUrl(DISCORD_URL)
@@ -136,7 +145,12 @@ class HomeFragment : Fragment() {
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val app = requireActivity().application as LauncherApplication
-            app.Installer?.InstallOnlyCache(requireActivity())
+            if (app.Installer != null) {
+                app.Installer?.InstallOnlyCache(requireActivity())
+            } else {
+                val intent = Intent(requireContext(), InstallActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         // تحميل المود
@@ -146,7 +160,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // فتح السيرفر مباشرة 🎮 (بدون عرض أي بطاقة تثبيت SA-MP بالواجهة)
     private fun joinServer() {
         val pm = requireActivity().packageManager
         val isInstalled = try {
@@ -177,7 +190,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // فحص حالة السيرفر (بدون عرض الـ IP والبورت بالواجهة)
     private fun checkServerStatus() {
         val app = requireActivity().application as LauncherApplication
         if (app.userConfig.PingTimeout <= 0) {
@@ -187,22 +199,23 @@ class HomeFragment : Fragment() {
         ServerConfig.Resolve(SERVER_IP, SERVER_PORT, app.userConfig.PingTimeout, requireContext(), object : ServerResolveCallback {
             override fun OnFinish(OutConfig: ServerConfig?) {
                 activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
                     OutConfig?.let { config ->
                         tvPlayersCount.text = "لاعبين: ${config.OnlinePlayers}/${config.MaxPlayers}"
 
                         when {
                             ServerConfig.IsStatusOk(config.Status) -> {
                                 tvServerStatus.text = "🟢 السيرفر أونلاين"
-                                tvServerStatus.setTextColor(resources.getColor(R.color.green))
+                                tvServerStatus.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
                                 tvPing.text = "Ping: نشط"
                             }
                             ServerConfig.IsStatusNone(config.Status) -> {
                                 tvServerStatus.text = "🟡 جاري التحقق..."
-                                tvServerStatus.setTextColor(resources.getColor(R.color.gold))
+                                tvServerStatus.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_orange_light))
                             }
                             else -> {
                                 tvServerStatus.text = "🔴 السيرفر أوفلاين"
-                                tvServerStatus.setTextColor(resources.getColor(R.color.colorError))
+                                tvServerStatus.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
                                 tvPing.text = "Ping: --"
                                 tvPlayersCount.text = "لاعبين: 0/0"
                             }
@@ -213,13 +226,14 @@ class HomeFragment : Fragment() {
 
             override fun OnPingFinish(OutConfig: ServerConfig?) {
                 activity?.runOnUiThread {
+                    if (!isAdded) return@runOnUiThread
                     OutConfig?.let { config ->
                         if (ServerConfig.IsStatusOk(config.Status)) {
                             tvServerStatus.text = "🟢 السيرفر أونلاين"
-                            tvServerStatus.setTextColor(resources.getColor(R.color.green))
+                            tvServerStatus.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_green_light))
                         } else {
                             tvServerStatus.text = "🔴 السيرفر أوفلاين"
-                            tvServerStatus.setTextColor(resources.getColor(R.color.colorError))
+                            tvServerStatus.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_light))
                             tvPlayersCount.text = "لاعبين: 0/0"
                         }
                     }
@@ -231,22 +245,21 @@ class HomeFragment : Fragment() {
     private fun showModDownloadDialog() {
         val mods = arrayOf("مود الخريطة الكاملة", "مود الشخصيات", "مود الأسلحة", "مود السيارات")
         val urls = arrayOf(
-            "https://yourserver.com/mods/cars.zip",
-            "https://yourserver.com/mods/weapons.zip",
+            "https://yourserver.com/mods/map.zip",
             "https://yourserver.com/mods/skins.zip",
-            "https://yourserver.com/mods/map.zip"
+            "https://yourserver.com/mods/weapons.zip",
+            "https://yourserver.com/mods/cars.zip"
         )
 
         AlertDialog.Builder(requireContext())
             .setTitle("🛠️ اختر المود للتحميل")
             .setItems(mods) { _, which ->
-                downloadFile(urls[which], "mod_${mods[which]}.zip", "تحميل ${mods[which]}")
+                downloadFile(urls[which], "mod_${which + 1}.zip", "تحميل ${mods[which]}")
             }
             .setNegativeButton("إلغاء", null)
             .show()
     }
 
-    // الاسم يظل محفوظًا بالنظام لكن لا يُعرض بالواجهة أبدًا
     private fun showEditNicknameDialog() {
         val app = requireActivity().application as LauncherApplication
         val editText = EditText(requireContext()).apply {
@@ -324,7 +337,7 @@ class HomeFragment : Fragment() {
 
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "✅ اتم التحميل!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "✅ اكتمل التحميل!", Toast.LENGTH_LONG).show()
                 }
 
             } catch (e: Exception) {
@@ -345,7 +358,7 @@ class HomeFragment : Fragment() {
         entries.add(Entry(4f, 24f))
 
         val dataSet = LineDataSet(entries, "Ping").apply {
-            color = resources.getColor(android.R.color.holo_green_dark)
+            color = ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark)
             setDrawCircles(false)
             lineWidth = 2f
         }
@@ -359,12 +372,10 @@ class HomeFragment : Fragment() {
         chartPing.invalidate()
     }
 
-    // الاسم يبقى مخفي دائمًا بالواجهة (اسم + شرطة فقط، بدون كتابة الاسم الحقيقي)
     private fun loadNickname() {
         tvNickname.text = HIDDEN_NAME
     }
 
-    // ✨ دخول ناعم للبطاقات عند فتح الشاشة
     private fun animateEntrance(view: View) {
         view.alpha = 0f
         view.translationY = 50f
@@ -376,7 +387,6 @@ class HomeFragment : Fragment() {
             .start()
     }
 
-    // ✨ نبضة خفيفة على نص حالة السيرفر تعطي إحساس "حي"
     private fun pulseStatus() {
         if (!isAdded) return
         tvServerStatus.animate()
