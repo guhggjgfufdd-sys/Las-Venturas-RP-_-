@@ -1,363 +1,586 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient_background"
-    android:fillViewport="true">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <!-- صورة الخلفية (بدلها بصورتك) -->
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_city_car"/>
 
-        <!-- ====== العنوان ====== -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Las Venturas RP"
-            android:textColor="@color/gold"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:gravity="center"
-            android:shadowColor="#D4AF37"
-            android:shadowRadius="8"
-            android:shadowDx="0"
-            android:shadowDy="2"/>
+    <!-- تعتيم فوق الصورة -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#B30F0B1E"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="قائدة OpenSAM"
-            android:textColor="@color/gray"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- ====== قسم التحميلات ====== -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="⚡ لوحة التحميلات"
-            android:textColor="@color/gold"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginBottom="16dp">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <!-- تحميل الكاش -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_download_cache"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="8dp"
-                app:cardBackgroundColor="@color/card_background"
-                app:cardCornerRadius="16dp"
-                app:strokeColor="@color/gold"
-                app:strokeWidth="1dp"
-                app:cardElevation="6dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="18dp">
-
-                    <ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:src="@android:drawable/stat_sys_download"
-                        app:tint="@color/gold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="تحميل الكاش"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:layout_marginTop="10dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ملفات الكاش"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- تحميل المود -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/card_download_mod"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                app:cardBackgroundColor="@color/card_background"
-                app:cardCornerRadius="16dp"
-                app:strokeColor="@color/purple"
-                app:strokeWidth="1dp"
-                app:cardElevation="6dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:padding="18dp">
-
-                    <ImageView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:src="@android:drawable/ic_menu_manage"
-                        app:tint="@color/purple"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="تحميل مود"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:layout_marginTop="10dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="مودات إضافية"
-                        android:textColor="@color/gray"
-                        android:textSize="11sp"/>
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-        </LinearLayout>
-
-        <!-- ====== حالة السيرفر + زر الدخول (بدون IP/بورت ظاهر، وبدون بطاقة تثبيت SA-MP) ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="20dp"
-            app:strokeColor="@color/gold"
-            app:strokeWidth="1.5dp"
-            app:cardElevation="10dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="18dp">
-
-                <!-- عنوان الحالة + زر تحديث -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="📊 حالة السيرفر"
-                        android:textColor="@color/white"
-                        android:textStyle="bold"
-                        android:textSize="17sp"/>
-
-                    <ImageButton
-                        android:id="@+id/btn_refresh_status"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"
-                        android:src="@android:drawable/ic_menu_rotate"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        app:tint="@color/gold"/>
-                </LinearLayout>
-
-                <!-- حالة السيرفر -->
-                <TextView
-                    android:id="@+id/tv_server_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🟡 جاري التحقق..."
-                    android:textColor="@color/gold"
-                    android:layout_marginTop="10dp"
-                    android:textSize="16sp"
-                    android:textStyle="bold"/>
-
-                <!-- Ping و عدد اللاعبين -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
-
-                    <TextView
-                        android:id="@+id/tv_players_count"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="لاعبين: --/--"
-                        android:textColor="@color/white"
-                        android:textSize="15sp"/>
-
-                    <TextView
-                        android:id="@+id/tv_ping"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Ping: --"
-                        android:textColor="@color/green"
-                        android:textSize="15sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
-
-                <!-- رسم Ping -->
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/chart_ping"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
-                    android:layout_marginTop="10dp"/>
-
-                <!-- فاصل -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#3A3A5C"
-                    android:layout_marginVertical="12dp"/>
-
-                <!-- 🎮 زر دخول السيرفر -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_join_server"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="🎮 دخول السيرفر"
-                    android:textColor="@color/dark_background"
-                    android:textStyle="bold"
-                    android:textSize="17sp"
-                    android:layout_marginTop="12dp"
-                    app:backgroundTint="@color/gold"
-                    app:cornerRadius="16dp"
-                    app:elevation="4dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ====== اسم المستخدم (مخفي دائمًا) ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="12dp">
-
+            <!-- ====== الهيدر: اللوقو + الإشعارات ====== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="14dp"
-                android:gravity="center_vertical">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_myplaces"
-                    app:tint="@color/gray"/>
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="اللاعب"
-                        android:textColor="@color/white"
+                        android:text="SAMP"
+                        android:textColor="@color/text_white"
+                        android:textSize="24sp"
                         android:textStyle="bold"
-                        android:textSize="13sp"/>
+                        android:letterSpacing="0.1"/>
 
                     <TextView
-                        android:id="@+id/tv_nickname"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="••••••_"
-                        android:textColor="@color/gold"
+                        android:text="LAUNCHER"
+                        android:textColor="@color/purple_primary"
                         android:textSize="15sp"
-                        android:letterSpacing="0.1"/>
+                        android:textStyle="bold"
+                        android:letterSpacing="0.15"/>
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btn_edit_nick"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="تعديل"
-                    android:textColor="@color/gold"
-                    android:textSize="12sp"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"/>
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp">
+
+                    <ImageButton
+                        android:id="@+id/btn_notifications"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        android:background="@drawable/bg_circle_dark"
+                        android:src="@android:drawable/ic_popup_reminder"
+                        app:tint="@color/text_white"
+                        android:padding="10dp"/>
+
+                    <View
+                        android:layout_width="9dp"
+                        android:layout_height="9dp"
+                        android:layout_gravity="top|end"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/dot_purple"/>
+                </FrameLayout>
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <!-- ====== خلاصة المجتمع: زر ديسكورد واحد فقط ====== -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/card_background"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="8dp">
-
-            <LinearLayout
+            <!-- ====== بطاقة البروفايل ====== -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="14dp">
+                app:cardBackgroundColor="#992D2647"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="14dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🌐 خلاصة المجتمع"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="15sp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="انضم لمجتمعنا على الديسكورد"
-                    android:textColor="@color/gray"
-                    android:textSize="12sp"
-                    android:layout_marginTop="3dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_discord"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:text="💬 دخول الديسكورد"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
-                    android:layout_marginTop="12dp"
-                    app:backgroundTint="#5865F2"
-                    app:cornerRadius="14dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-    </LinearLayout>
-</ScrollView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <FrameLayout
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
+
+                            <ImageView
+                                android:id="@+id/iv_avatar"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                android:background="@drawable/bg_circle_purple_border"
+                                android:padding="2dp"
+                                android:src="@drawable/avatar_placeholder"
+                                android:scaleType="centerCrop"/>
+
+                            <View
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_gravity="bottom|end"
+                                android:background="@drawable/dot_online"/>
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginStart="14dp">
+
+                            <TextView
+                                android:id="@+id/tv_player_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="PlayerName"
+                                android:textColor="@color/text_white"
+                                android:textSize="17sp"
+                                android:textStyle="bold"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="متصل الآن"
+                                android:textColor="@color/purple_primary"
+                                android:textSize="13sp"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- فاصل -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#332D2647"
+                        android:layout_marginBottom="14dp"/>
+
+                    <!-- المستوى والنقاط -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_recent_history"
+                            app:tint="@color/purple_primary"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="  المستوى"
+                            android:textColor="@color/text_gray"
+                            android:textSize="13sp"
+                            android:layout_marginStart="6dp"/>
+
+                        <TextView
+                            android:id="@+id/tv_level"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="12"
+                            android:textColor="@color/text_white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="20dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="النقاط"
+                            android:textColor="@color/text_gray"
+                            android:textSize="13sp"/>
+
+                        <TextView
+                            android:id="@+id/tv_points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2,450"
+                            android:textColor="@color/text_white"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:layout_marginEnd="8dp"/>
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/btn_star_big_on"
+                            app:tint="@color/purple_primary"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ====== زر دخول اللعبة (الأساسي) ====== -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_enter_game"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                app:backgroundTint="@color/purple_primary"
+                app:cornerRadius="18dp"
+                app:icon="@android:drawable/ic_media_play"
+                app:iconTint="@color/text_white"
+                app:iconGravity="textStart"
+                android:text="دخول اللعبة"
+                android:textColor="@color/text_white"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="الاتصال بالسيرفر واللعب الآن"
+                android:textColor="@color/text_gray"
+                android:textSize="12sp"
+                android:gravity="center"
+                android:layout_marginTop="-8dp"
+                android:layout_marginBottom="18dp"
+                android:visibility="gone"/>
+
+            <!-- ====== قائمة العناصر ====== -->
+            <include layout="@layout/item_menu_row"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/row_servers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_mapmode"
+                        app:tint="@color/purple_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="السيرفرات"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="تصفح قائمة السيرفرات"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_media_rew"
+                        android:rotation="180"
+                        app:tint="@color/text_gray"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/row_store"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="@color/purple_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="المتجر"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="شراء المنتجات والدعم"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_media_rew"
+                        android:rotation="180"
+                        app:tint="@color/text_gray"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/row_news"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_recent_history"
+                        app:tint="@color/purple_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="الأخبار"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="آخر أخبار وتحديثات السيرفر"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_media_rew"
+                        android:rotation="180"
+                        app:tint="@color/text_gray"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/row_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="16dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="@color/purple_primary"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="14dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="حسابي"
+                            android:textColor="@color/text_white"
+                            android:textSize="15sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="إدارة حسابك وإعداداته"
+                            android:textColor="@color/text_gray"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_media_rew"
+                        android:rotation="180"
+                        app:tint="@color/text_gray"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- ====== شريط سفلي: إعدادات / دعم / خروج ====== -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/card_dark"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:layout_marginBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="3"
+                    android:padding="14dp">
+
+                    <LinearLayout
+                        android:id="@+id/btn_settings"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@android:drawable/ic_menu_preferences"
+                            app:tint="@color/purple_primary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="الإعدادات"
+                            android:textColor="@color/text_white"
+                            android:textSize="13sp"
+                            android:layout_marginStart="6dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_support"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@android:drawable/ic_menu_help"
+                            app:tint="@color/purple_primary"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="الدعم"
+                            android:textColor="@color/text_white"
+                            android:textSize="13sp"
+                            android:layout_marginStart="6dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_logout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@android:drawable/ic_lock_power_off"
+                            app:tint="@color/danger_red"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="خروج"
+                            android:textColor="@color/danger_red"
+                            android:textSize="13sp"
+                            android:layout_marginStart="6dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SAMP LAUNCHER v2.1.0"
+                android:textColor="@color/purple_primary"
+                android:textSize="11sp"
+                android:gravity="center"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>
