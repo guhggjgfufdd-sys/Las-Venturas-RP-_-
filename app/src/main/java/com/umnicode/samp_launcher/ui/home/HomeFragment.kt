@@ -8,11 +8,15 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -43,6 +47,7 @@ class HomeFragment : Fragment() {
     private lateinit var btnDiscord: Button
     private lateinit var btnLogin: Button
     private lateinit var btnInstallSamp: MaterialButton
+    private lateinit var btnRefreshStatus: ImageButton
     private lateinit var chartPing: LineChart
     private lateinit var cardDownloadCache: CardView
     private lateinit var cardDownloadMod: CardView
@@ -64,6 +69,7 @@ class HomeFragment : Fragment() {
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
+        const val SAMP_PACKAGE = "com.rockstargames.gtasa"
     }
 
     override fun onCreateView(
@@ -86,6 +92,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         handler.post(refreshRunnable)
+        checkSAMPStatus() // تحقق مرة ثانية لما يرجع من تثبيت
     }
 
     override fun onPause() {
@@ -100,6 +107,7 @@ class HomeFragment : Fragment() {
         btnDiscord = view.findViewById(R.id.btn_discord)
         btnLogin = view.findViewById(R.id.btn_login)
         btnInstallSamp = view.findViewById(R.id.btn_install_samp)
+        btnRefreshStatus = view.findViewById(R.id.btn_refresh_status)
         chartPing = view.findViewById(R.id.chart_ping)
         cardDownloadCache = view.findViewById(R.id.card_download_cache)
         cardDownloadMod = view.findViewById(R.id.card_download_mod)
@@ -111,43 +119,92 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupListeners() {
+        // تعديل الاسم
         btnEditNick.setOnClickListener {
             showEditNicknameDialog()
         }
 
+        // 🔥 دخول السيرفر — يفتح SA-MP مباشرة
         btnJoinServer.setOnClickListener {
-            try {
-                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
-                startActivity(intent)
-            } catch (e: Exception) {
-                Toast.makeText(context, "تأكد من تثبيت SA-MP", Toast.LENGTH_SHORT).show()
-            }
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+            joinServer()
         }
 
+        // ديسكورد
         btnDiscord.setOnClickListener {
             openUrl(DISCORD_URL)
         }
 
+        // دخول
         btnLogin.setOnClickListener {
             Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
         }
 
+        // تثبيت SA-MP
         btnInstallSamp.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val app = requireActivity().application as LauncherApplication
             app.Installer?.Install(requireActivity())
         }
 
+        // تحديث حالة السيرفر يدوياً
+        btnRefreshStatus.setOnClickListener {
+            it.animate().rotationBy(360f).setDuration(500).start()
+            checkServerStatus()
+            Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
+        }
+
+        // تحميل الكاش
         cardDownloadCache.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             val app = requireActivity().application as LauncherApplication
             app.Installer?.InstallOnlyCache(requireActivity())
         }
 
+        // تحميل المود
         cardDownloadMod.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             showModDownloadDialog()
         }
     }
 
+    // 🎮 فتح السيرفر مباشرة
+    private fun joinServer() {
+        val pm = requireActivity().packageManager
+        val isInstalled = try {
+            pm.getPackageInfo(SAMP_PACKAGE, 0)
+            true
+        } catch (e: Exception) {
+            false
+        }
+
+        if (!isInstalled) {
+            // SA-MP مو مثبت — اعرض رسالة
+            Toast.makeText(context, "⚠️ SA-MP غير مثبت! اضغط على \"تثبيت الآن\" بالأعلى", Toast.LENGTH_LONG).show()
+            cardInstallSamp.visibility = View.VISIBLE
+            return
+        }
+
+        // افتح SA-MP مع IP السيرفر
+        try {
+            val intent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
+            if (intent != null) {
+                // نرسل IP كـ Extra إذا الـ SAMP يدعمها
+                intent.putExtra("ip", SERVER_IP)
+                intent.putExtra("port", SERVER_PORT)
+                startActivity(intent)
+                Toast.makeText(context, "🎮 جاري الدخول لـ Las Venturas RP...", Toast.LENGTH_SHORT).show()
+            } else {
+                // fallback: افتح بالـ samp:// URL
+                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl)))
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "خطأ: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // التحقق إذا SA-MP مثبت
     private fun checkSAMPStatus() {
         val status = SAMPInstaller.IsInstalled(requireActivity().packageManager, resources)
         when (status) {
@@ -165,10 +222,10 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // فحص حالة السيرفر
     private fun checkServerStatus() {
         val app = requireActivity().application as LauncherApplication
-        val pingTimeout = app.userConfig.PingTimeout
-        if (pingTimeout <= 0) {
+        if (app.userConfig.PingTimeout <= 0) {
             app.userConfig.PingTimeout = 3000
         }
 
@@ -226,7 +283,7 @@ class HomeFragment : Fragment() {
         )
 
         AlertDialog.Builder(requireContext())
-            .setTitle("اختر المود للتحميل")
+            .setTitle("🔧 اختر المود للتحميل")
             .setItems(mods) { _, which ->
                 downloadFile(urls[which], "mod_${mods[which]}.zip", "تحميل ${mods[which]}")
             }
@@ -241,7 +298,7 @@ class HomeFragment : Fragment() {
         }
 
         AlertDialog.Builder(requireContext())
-            .setTitle("تعديل الاسم")
+            .setTitle("✏️ تعديل الاسم")
             .setView(editText)
             .setPositiveButton("حفظ") { _, _ ->
                 val newName = editText.text.toString().trim()
@@ -250,7 +307,7 @@ class HomeFragment : Fragment() {
                     val app = requireActivity().application as LauncherApplication
                     app.userConfig.Nickname = newName
                     app.userConfig.Save()
-                    Toast.makeText(context, "تم الحفظ!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "✅ تم الحفظ!", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("إلغاء", null)
@@ -311,13 +368,13 @@ class HomeFragment : Fragment() {
 
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "تم التحميل!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "✅ تم التحميل!", Toast.LENGTH_LONG).show()
                 }
 
             } catch (e: Exception) {
                 activity?.runOnUiThread {
                     progressDialog.dismiss()
-                    Toast.makeText(context, "خطأ: ${e.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "❌ خطأ: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
