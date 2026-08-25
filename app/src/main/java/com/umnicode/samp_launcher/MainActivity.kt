@@ -22,7 +22,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
-    private var permissionCallback: ((Boolean) -> Unit)? = null
+    // واجهة للتوافق المباشر مع جافا
+    fun interface PermissionCallback {
+        fun onResult(isGranted: Boolean)
+    }
+
+    private var permissionCallback: PermissionCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // الدالة الأولى التي يحتاجها SAMPInstaller
     fun IsStoragePermissionsGranted(): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             Environment.isExternalStorageManager()
@@ -70,12 +74,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // الدالة الثانية التي يحتاجها SAMPInstaller
-    fun RequestStoragePermission(callback: (Boolean) -> Unit) {
+    fun RequestStoragePermission(callback: PermissionCallback) {
         this.permissionCallback = callback
 
         if (IsStoragePermissionsGranted()) {
-            callback(true)
+            callback.onResult(true)
             return
         }
 
@@ -108,7 +111,7 @@ class MainActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1001) {
             val isGranted = grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
-            permissionCallback?.invoke(isGranted)
+            permissionCallback?.onResult(isGranted)
         }
     }
 
@@ -117,7 +120,7 @@ class MainActivity : AppCompatActivity() {
 
         if (hasFocus) {
             if (permissionCallback != null && IsStoragePermissionsGranted()) {
-                permissionCallback?.invoke(true)
+                permissionCallback?.onResult(true)
                 permissionCallback = null
             }
 
