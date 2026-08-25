@@ -1,101 +1,304 @@
-package com.umnicode.samp_launcher.ui.home
+package com.umnicode.samp_launcher
 
-import android.content.Context
-import android.content.SharedPreferences
+import android.app.AlertDialog
+import android.app.ProgressDialog
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import com.umnicode.samp_launcher.LauncherApplication
-import com.umnicode.samp_launcher.R
-import com.umnicode.samp_launcher.core.ServerConfig
-import com.umnicode.samp_launcher.core.ServerResolveCallback
-import com.umnicode.samp_launcher.core.ServerView
-import com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import java.io.File
+import java.io.FileOutputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 class HomeFragment : Fragment() {
-    private lateinit var rootView: View
 
-    private val SERVER_IP = "142.132.203.47"
-    private val SERVER_PORT = "21299"
+    private lateinit var tvNickname: TextView
+    private lateinit var btnEditNick: Button
+    private lateinit var btnJoinServer: Button
+    private lateinit var btnDiscord: Button
+    private lateinit var btnLogin: Button
+    private lateinit var chartPing: LineChart
+    private lateinit var cardDownloadCache: CardView
+    private lateinit var cardDownloadMod: CardView
+
+    // روابط التحميل - عدلها حسب سيرفرك
+    companion object {
+        const val CACHE_DOWNLOAD_URL = "https://yourserver.com/files/cache.zip"
+        const val MOD_DOWNLOAD_URL = "https://yourserver.com/files/mods.zip"
+        const val DISCORD_URL = "https://discord.gg/yourserver"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        val sharedPreferences: SharedPreferences? = this.context?.getSharedPreferences("HomeFragment", Context.MODE_PRIVATE)
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        this.rootView = inflater.inflate(R.layout.fragment_home, container, false)
+        // ربط العناصر بالكود
+        initViews(view)
+        
+        // إعداد المستمعات (Listeners)
+        setupListeners()
+        
+        // إعداد رسم البيانات
+        setupPingChart()
 
-        val nicknameText: EditText = this.rootView.findViewById(R.id.nickname)
-        val launcherApplication: LauncherApplication = activity?.application as LauncherApplication
-        nicknameText.setText(launcherApplication.userConfig.Nickname)
+        return view
+    }
 
-        nicknameText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                launcherApplication.userConfig.Nickname = s.toString()
-            }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+    private fun initViews(view: View) {
+        tvNickname = view.findViewById(R.id.tv_nickname)
+        btnEditNick = view.findViewById(R.id.btn_edit_nick)
+        btnJoinServer = view.findViewById(R.id.btn_join_server)
+        btnDiscord = view.findViewById(R.id.btn_discord)
+        btnLogin = view.findViewById(R.id.btn_login)
+        chartPing = view.findViewById(R.id.chart_ping)
+        cardDownloadCache = view.findViewById(R.id.card_download_cache)
+        cardDownloadMod = view.findViewById(R.id.card_download_mod)
+    }
 
-        val playButton: PlayButton = this.rootView.findViewById(R.id.play_btn) as PlayButton
-        playButton.SetOnSAMPLaunchCallback {
-            println("Launch SAMP")
+    private fun setupListeners() {
+        // تعديل الاسم
+        btnEditNick.setOnClickListener {
+            showEditNicknameDialog()
         }
 
-        val discordCard: View = this.rootView.findViewById(R.id.discord_card)
-        discordCard.setOnClickListener {
-            val intent = android.content.Intent(
-                android.content.Intent.ACTION_VIEW,
-                android.net.Uri.parse("https://discord.gg/eZFKQ83ke")
+        // دخول السيرفر
+        btnJoinServer.setOnClickListener {
+            joinServer()
+        }
+
+        // رابط الديسكورد
+        btnDiscord.setOnClickListener {
+            openUrl(DISCORD_URL)
+        }
+
+        // تسجيل الدخول
+        btnLogin.setOnClickListener {
+            // انتقل لشاشة تسجيل الدخول
+            Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
+        }
+
+        // تحميل الكاش
+        cardDownloadCache.setOnClickListener {
+            downloadFile(
+                url = CACHE_DOWNLOAD_URL,
+                fileName = "cache_files.zip",
+                title = "تحميل الكاش",
+                extractPath = "Android/data/com.rockstargames.gtasa/files/"
             )
+        }
+
+        // تحميل المود (الجديد)
+        cardDownloadMod.setOnClickListener {
+            showModDownloadDialog()
+        }
+    }
+
+    /**
+     * ديالوج اختيار المود قبل التحميل
+     */
+    private fun showModDownloadDialog() {
+        val mods = arrayOf("مود السيارات", "مود الأسلحة", "مود الشخصيات", "مود الخريطة الكاملة")
+        val urls = arrayOf(
+            "https://yourserver.com/mods/cars.zip",
+            "https://yourserver.com/mods/weapons.zip",
+            "https://yourserver.com/mods/skins.zip",
+            "https://yourserver.com/mods/map.zip"
+        )
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("اختر المود للتحميل")
+            .setItems(mods) { _, which ->
+                downloadFile(
+                    url = urls[which],
+                    fileName = "mod_${mods[which]}.zip",
+                    title = "تحميل ${mods[which]}",
+                    extractPath = "Android/data/com.rockstargames.gtasa/files/mods/"
+                )
+            }
+            .setNegativeButton("إلغاء", null)
+            .show()
+    }
+
+    /**
+     * ديالوج تعديل الاسم
+     */
+    private fun showEditNicknameDialog() {
+        val editText = EditText(requireContext()).apply {
+            setText(tvNickname.text)
+            hint = "أدخل اسمك في اللعبة"
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("تعديل الاسم")
+            .setView(editText)
+            .setPositiveButton("حفظ") { _, _ ->
+                val newName = editText.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    tvNickname.text = newName
+                    // حفظ في SharedPreferences
+                    requireContext().getSharedPreferences("launcher_prefs", 0)
+                        .edit()
+                        .putString("nickname", newName)
+                        .apply()
+                    Toast.makeText(context, "تم الحفظ!", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("إلغاء", null)
+            .show()
+    }
+
+    /**
+     * دخول السيرفر (يفتح SA-MP)
+     */
+    private fun joinServer() {
+        try {
+            // إذا كان عندك Activity خاصة بالدخول
+            val intent = Intent(requireContext(), ServerJoinActivity::class.java)
+            startActivity(intent)
+        } catch (e: Exception) {
+            // fallback - افتح رابط samp مباشرة
+            val sampUrl = "samp://your.server.ip:7777"
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
             startActivity(intent)
         }
-
-        this.updateServerConfig()
-        return this.rootView
     }
 
-    private fun setStatusBadge(text: String, backgroundRes: Int, textColor: Int) {
-        val badge: TextView = this.rootView.findViewById(R.id.serverStatusBadge)
-        badge.text = text
-        badge.setBackgroundResource(backgroundRes)
-        badge.setTextColor(textColor)
+    /**
+     * فتح رابط خارجي
+     */
+    private fun openUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
     }
 
-    private fun updateServerConfig() {
-        val userConfig = (activity?.application as LauncherApplication).userConfig
+    /**
+     * نظام التحميل العام (للكاش والمودات)
+     */
+    private fun downloadFile(url: String, fileName: String, title: String, extractPath: String) {
+        val progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle(title)
+            setMessage("جاري التحميل...")
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+            isIndeterminate = false
+            setCancelable(false)
+            show()
+        }
 
-        setStatusBadge("● جاري التحقق", R.drawable.status_pending_bg, 0xFFFFC107.toInt())
+        thread {
+            try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                connection.connect()
 
-        ServerConfig.Resolve(SERVER_IP, SERVER_PORT.toInt(), userConfig.PingTimeout, this.context, object : ServerResolveCallback {
-            override fun OnFinish(OutConfig: ServerConfig?) {
-                val serverView: ServerView = rootView.findViewById(R.id.server_view)
+                val fileLength = connection.contentLength
+                val input = connection.inputStream
+                
+                // مجلد التحميلات
+                val downloadDir = File(
+                    Environment.getExternalStorageDirectory(),
+                    "Download/LasVenturasRP"
+                )
+                if (!downloadDir.exists()) downloadDir.mkdirs()
 
-                if (OutConfig != null) {
-                    serverView.SetServer(OutConfig)
-                    setStatusBadge("● أونلاين", R.drawable.status_online_bg, 0xFF4CAF50.toInt())
+                val outputFile = File(downloadDir, fileName)
+                val output = FileOutputStream(outputFile)
 
-                    val playButton: PlayButton = rootView.findViewById(R.id.play_btn) as PlayButton
-                    playButton.SetServerConfig(OutConfig)
-                } else {
-                    setStatusBadge("● صيانة حالياً", R.drawable.status_offline_bg, 0xFFE53935.toInt())
+                val buffer = ByteArray(1024)
+                var total: Long = 0
+                var count: Int
+
+                while (input.read(buffer).also { count = it } != -1) {
+                    total += count
+                    output.write(buffer, 0, count)
+                    
+                    // تحديث الـ Progress
+                    if (fileLength > 0) {
+                        val progress = (total * 100 / fileLength).toInt()
+                        activity?.runOnUiThread {
+                            progressDialog.progress = progress
+                            progressDialog.setMessage("تم: $progress%")
+                        }
+                    }
+                }
+
+                output.flush()
+                output.close()
+                input.close()
+
+                activity?.runOnUiThread {
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        context,
+                        "تم التحميل: ${outputFile.absolutePath}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    
+                    // هنا تقدر تضيف كود فك الضغط تلقائياً
+                    // unzipFile(outputFile, extractPath)
+                }
+
+            } catch (e: Exception) {
+                activity?.runOnUiThread {
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        context,
+                        "خطأ في التحميل: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
+        }
+    }
 
-            override fun OnPingFinish(OutConfig: ServerConfig?) {
-                val serverView: ServerView = rootView.findViewById(R.id.server_view)
-                if (OutConfig != null) {
-                    serverView.SetServer(OutConfig)
-                }
-            }
-        })
+    /**
+     * إعداد رسم الـ Ping
+     */
+    private fun setupPingChart() {
+        val entries = ArrayList<Entry>()
+        entries.add(Entry(0f, 24f))
+        entries.add(Entry(1f, 28f))
+        entries.add(Entry(2f, 22f))
+        entries.add(Entry(3f, 30f))
+        entries.add(Entry(4f, 24f))
+
+        val dataSet = LineDataSet(entries, "Ping").apply {
+            color = resources.getColor(android.R.color.holo_green_dark)
+            setDrawCircles(false)
+            lineWidth = 2f
+        }
+
+        chartPing.data = LineData(dataSet)
+        chartPing.description.isEnabled = false
+        chartPing.legend.isEnabled = false
+        chartPing.xAxis.isEnabled = false
+        chartPing.axisLeft.isEnabled = false
+        chartPing.axisRight.isEnabled = false
+        chartPing.invalidate()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // استرجاع الاسم المحفوظ
+        val savedName = requireContext()
+            .getSharedPreferences("launcher_prefs", 0)
+            .getString("nickname", "YourInGameNick")
+        tvNickname.text = savedName
     }
 }
