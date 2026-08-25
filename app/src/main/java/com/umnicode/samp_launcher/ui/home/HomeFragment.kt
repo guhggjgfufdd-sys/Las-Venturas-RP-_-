@@ -21,6 +21,10 @@ import com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
 class HomeFragment : Fragment() {
     private lateinit var rootView: View
 
+    // ✅ بيانات سيرفرك (Las Venturas RP) من Lemehost
+    private val SERVER_IP = "142.132.203.47"
+    private val SERVER_PORT = "21299"
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -31,41 +35,28 @@ class HomeFragment : Fragment() {
 
         this.rootView = inflater.inflate(R.layout.fragment_home, container, false)
 
-        val nicknameText: TextView = this.rootView.findViewById(R.id.nickname)
+        val nicknameText: EditText = this.rootView.findViewById(R.id.nickname)
         val launcherApplication: LauncherApplication = activity?.application as LauncherApplication
-        nicknameText.text = launcherApplication.userConfig.Nickname
-
-        val portEditText: EditText = this.rootView.findViewById(R.id.port)
+        nicknameText.setText(launcherApplication.userConfig.Nickname)
 
         val ipEditText: EditText = this.rootView.findViewById(R.id.ip)
+        val portEditText: EditText = this.rootView.findViewById(R.id.port)
         val passwordEditText: EditText = this.rootView.findViewById(R.id.password)
 
+        // 🔒 تثبيت IP والبورت تلقائيًا على سيرفرك (المستخدم ما يقدر يشوفهم أو يغيرهم)
+        ipEditText.setText(SERVER_IP)
+        portEditText.setText(SERVER_PORT)
+
         if (sharedPreferences != null) {
-            ipEditText.setText(sharedPreferences.getString(R.id.ip.toString(), ""))
-            portEditText.setText(sharedPreferences.getString(R.id.port.toString(), ""))
             passwordEditText.setText(sharedPreferences.getString(R.id.password.toString(), ""))
         }
 
-        ipEditText.addTextChangedListener(object : TextWatcher {
+        nicknameText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                preferencesEditor?.putString(R.id.ip.toString(), s.toString())
-                preferencesEditor?.apply()
+                launcherApplication.userConfig.Nickname = s.toString()
             }
-            override fun afterTextChanged(s: Editable?) {
-                updateServerConfig()
-            }
-        })
-
-        portEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                preferencesEditor?.putString(R.id.port.toString(), s.toString())
-                preferencesEditor?.apply()
-            }
-            override fun afterTextChanged(s: Editable?) {
-                updateServerConfig()
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
 
         passwordEditText.addTextChangedListener(object : TextWatcher {
@@ -89,18 +80,9 @@ class HomeFragment : Fragment() {
     }
 
     private fun updateServerConfig() {
-        val ipEdit: EditText = this.rootView.findViewById(R.id.ip)
-        val portEdit: EditText = this.rootView.findViewById(R.id.port)
         val userConfig = (activity?.application as LauncherApplication).userConfig
 
-        val IP: String = ipEdit.text.toString()
-        var port: Int = 0
-
-        if (portEdit.text.isNotEmpty()) {
-            port = portEdit.text.toString().toInt()
-        }
-
-        ServerConfig.Resolve(IP, port, userConfig.PingTimeout, this.context, object : ServerResolveCallback {
+        ServerConfig.Resolve(SERVER_IP, SERVER_PORT.toInt(), userConfig.PingTimeout, this.context, object : ServerResolveCallback {
             override fun OnFinish(OutConfig: ServerConfig?) {
                 val serverView: ServerView = rootView.findViewById(R.id.server_view)
                 serverView.SetServer(OutConfig)
