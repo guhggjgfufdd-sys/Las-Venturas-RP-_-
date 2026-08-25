@@ -6,6 +6,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,8 +21,12 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.umnicode.samp_launcher.LauncherApplication
 import com.umnicode.samp_launcher.R
+import com.umnicode.samp_launcher.core.SAMP.Enums.SAMPPackageStatus
+import com.umnicode.samp_launcher.core.SAMP.SAMPInstaller
 import com.umnicode.samp_launcher.core.ServerConfig
 import com.umnicode.samp_launcher.core.ServerResolveCallback
 import java.io.File
@@ -33,18 +39,31 @@ class HomeFragment : Fragment() {
 
     private lateinit var tvNickname: TextView
     private lateinit var btnEditNick: Button
-    private lateinit var btnJoinServer: Button
+    private lateinit var btnJoinServer: MaterialButton
     private lateinit var btnDiscord: Button
     private lateinit var btnLogin: Button
+    private lateinit var btnInstallSamp: MaterialButton
     private lateinit var chartPing: LineChart
     private lateinit var cardDownloadCache: CardView
     private lateinit var cardDownloadMod: CardView
+    private lateinit var cardInstallSamp: MaterialCardView
     private lateinit var tvPing: TextView
+    private lateinit var tvServerStatus: TextView
+    private lateinit var tvPlayersCount: TextView
+    private lateinit var tvServerInfo: TextView
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val refreshRunnable = object : Runnable {
+        override fun run() {
+            checkServerStatus()
+            handler.postDelayed(this, 30000) // تحديث كل 30 ثانية
+        }
+    }
 
     companion object {
-        const val DISCORD_URL = "https://discord.gg/yourserver"
-        const val SERVER_IP = "your.server.ip"
-        const val SERVER_PORT = 7777
+        const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
+        const val SERVER_IP = "142.132.203.47"
+        const val SERVER_PORT = 21299
     }
 
     override fun onCreateView(
@@ -58,9 +77,20 @@ class HomeFragment : Fragment() {
         setupListeners()
         setupPingChart()
         loadNickname()
+        checkSAMPStatus()
         checkServerStatus()
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        handler.post(refreshRunnable)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacks(refreshRunnable)
     }
 
     private fun initViews(view: View) {
@@ -69,17 +99,24 @@ class HomeFragment : Fragment() {
         btnJoinServer = view.findViewById(R.id.btn_join_server)
         btnDiscord = view.findViewById(R.id.btn_discord)
         btnLogin = view.findViewById(R.id.btn_login)
+        btnInstallSamp = view.findViewById(R.id.btn_install_samp)
         chartPing = view.findViewById(R.id.chart_ping)
         cardDownloadCache = view.findViewById(R.id.card_download_cache)
         cardDownloadMod = view.findViewById(R.id.card_download_mod)
+        cardInstallSamp = view.findViewById(R.id.card_install_samp)
         tvPing = view.findViewById(R.id.tv_ping)
+        tvServerStatus = view.findViewById(R.id.tv_server_status)
+        tvPlayersCount = view.findViewById(R.id.tv_players_count)
+        tvServerInfo = view.findViewById(R.id.tv_server_info)
     }
 
     private fun setupListeners() {
+        // تعديل الاسم
         btnEditNick.setOnClickListener {
             showEditNicknameDialog()
         }
 
+        // دخول السيرفر
         btnJoinServer.setOnClickListener {
             try {
                 val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
@@ -90,24 +127,98 @@ class HomeFragment : Fragment() {
             }
         }
 
+        // ديسكورد
         btnDiscord.setOnClickListener {
             openUrl(DISCORD_URL)
         }
 
+        // دخول
         btnLogin.setOnClickListener {
             Toast.makeText(context, "جاري فتح شاشة الدخول...", Toast.LENGTH_SHORT).show()
         }
 
+        // تثبيت SA-MP
+        btnInstallSamp.setOnClickListener {
+            val app = requireActivity().application as LauncherApplication
+            app.Installer?.Install(requireActivity())
+        }
+
+        // تحميل الكاش
         cardDownloadCache.setOnClickListener {
             val app = requireActivity().application as LauncherApplication
             app.Installer?.InstallOnlyCache(requireActivity())
         }
 
+        // تحميل المود
         cardDownloadMod.setOnClickListener {
             showModDownloadDialog()
         }
     }
 
+    // التحقق إذا SA-MP مثبت
+    private fun checkSAMPStatus() {
+        val status = SAMPInstaller.IsInstalled(requireActivity().packageManager, resources)
+        when (status) {
+            SAMPPackageStatus.FOUND -> {
+                cardInstallSamp.visibility = View.GONE
+            }
+            SAMPPackageStatus.CACHE_NOT_FOUND -> {
+                cardInstallSamp.visibility = View.VISIBLE
+                btnInstallSamp.text = "تثبيت الكاش"
+            }
+            SAMPPackageStatus.NOT_FOUND -> {
+                cardInstallSamp.visibility = View.VISIBLE
+                btnInstallSamp.text = "تثبيت SA-MP"
+            }
+        }
+    }
+
+    // فحص حالة السيرفر (عدد لاعبين حقيقي)
+    private fun checkServerStatus() {
+        ServerConfig.Resolve(SERVER_IP, SERVER_PORT, 3000, requireContext(), object : ServerResolveCallback {
+            override fun OnFinish(OutConfig: ServerConfig?) {
+                activity?.runOnUiThread {
+                    OutConfig?.let { config ->
+                        tvPlayersCount.text = "لاعبين: ${config.OnlinePlayers}/${config.MaxPlayers}"
+                        
+                        when {
+                            ServerConfig.IsStatusOk(config.Status) -> {
+                                tvServerStatus.text = "🟢 السيرفر أونلاين"
+                                tvServerStatus.setTextColor(resources.getColor(R.color.green))
+                                tvPing.text = "Ping: ${config.PingTimeout}ms"
+                            }
+                            ServerConfig.IsStatusNone(config.Status) -> {
+                                tvServerStatus.text = "🟡 جاري التحقق..."
+                                tvServerStatus.setTextColor(resources.getColor(R.color.gold))
+                            }
+                            else -> {
+                                tvServerStatus.text = "🔴 السيرفر أوفلاين"
+                                tvServerStatus.setTextColor(resources.getColor(R.color.colorError))
+                                tvPing.text = "Ping: --"
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun OnPingFinish(OutConfig: ServerConfig?) {
+                activity?.runOnUiThread {
+                    OutConfig?.let { config ->
+                        if (ServerConfig.IsStatusOk(config.Status)) {
+                            tvServerStatus.text = "🟢 السيرفر أونلاين"
+                            tvServerStatus.setTextColor(resources.getColor(R.color.green))
+                        } else {
+                            tvServerStatus.text = "🔴 السيرفر أوفلاين"
+                            tvServerStatus.setTextColor(resources.getColor(R.color.colorError))
+                            tvPlayersCount.text = "لاعبين: 0/0"
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    // ديالوج اختيار المود
     private fun showModDownloadDialog() {
         val mods = arrayOf("مود السيارات", "مود الأسلحة", "مود الشخصيات", "مود الخريطة الكاملة")
         val urls = arrayOf(
@@ -126,6 +237,7 @@ class HomeFragment : Fragment() {
             .show()
     }
 
+    // ديالوج تعديل الاسم
     private fun showEditNicknameDialog() {
         val editText = EditText(requireContext()).apply {
             setText(tvNickname.text)
@@ -149,10 +261,12 @@ class HomeFragment : Fragment() {
             .show()
     }
 
+    // فتح رابط
     private fun openUrl(url: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
     }
 
+    // نظام التحميل العام
     private fun downloadFile(url: String, fileName: String, title: String) {
         val progressDialog = ProgressDialog(requireContext()).apply {
             setTitle(title)
@@ -215,6 +329,7 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // رسم الـ Ping
     private fun setupPingChart() {
         val entries = ArrayList<Entry>()
         entries.add(Entry(0f, 24f))
@@ -238,23 +353,11 @@ class HomeFragment : Fragment() {
         chartPing.invalidate()
     }
 
+    // تحميل الاسم المحفوظ
     private fun loadNickname() {
         val app = requireActivity().application as LauncherApplication
         if (app.userConfig.Nickname.isNotEmpty()) {
             tvNickname.text = app.userConfig.Nickname
         }
-    }
-
-    private fun checkServerStatus() {
-        ServerConfig.Resolve(SERVER_IP, SERVER_PORT, 3000, requireContext(), object : ServerResolveCallback {
-            override fun OnFinish(OutConfig: ServerConfig?) {
-                OutConfig?.let {
-                    if (it.OnlinePlayers >= 0) {
-                        tvPing.text = "Ping: نشط | لاعبين: ${it.OnlinePlayers}/${it.MaxPlayers}"
-                    }
-                }
-            }
-            override fun OnPingFinish(OutConfig: ServerConfig?) {}
-        })
     }
 }
