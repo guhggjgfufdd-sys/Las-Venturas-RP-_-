@@ -1,80 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">OpenSAMP Launcher</string>
-    <string name="user_config_name">user_config</string>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#121212"
+    android:padding="16dp">
 
-    <string name="title_home">الرئيسية</string>
-    <string name="title_servers">السيرفرات</string>
-    <string name="title_settings">الإعدادات</string>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <string name="welcome">مرحباً بك في OpenSAMP Launcher</string>
+        <!-- بطاقة الترحيب -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:background="@drawable/card_bg"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:gravity="center">
 
-    <string name="play_button_launch_SAMP">دخول اللعبة</string>
-    <string name="play_button_server_incorrect">معلومات السيرفر غير صحيحة</string>
-    <string name="play_button_install_SAMP">تثبيت ملفات SAMP</string>
-    <string name="play_button_install_SAMP_APK">تثبيت APK</string>
-    <string name="play_button_install_SAMP_CACHE">تثبيت الكاش</string>
-    <string name="play_button_show_download_status">جاري التحميل %d من %d</string>
-    <string name="play_button_show_extract_status">جاري فك الضغط %.2f/%.2f</string>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="مرحباً بك في سيرفرك المفضل"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-    <string name="add_server_button">إضافة سيرفر للقائمة</string>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="جاهز للعب الآن بجودة عالية وأداء مستقر"
+                android:textColor="#AAAAAA"
+                android:textSize="12sp" />
+        </LinearLayout>
 
-    <string name="server_port_hint">منفذ السيرفر Port</string>
-    <string name="server_ip_hint">عنوان السيرفر IP</string>
-    <string name="server_password_hint">كلمة السر (اختياري)</string>
+        <!-- أدوات التحكم والاسم -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
 
-    <string name="help_string">أدخل عنوان السيرفر والمنفذ</string>
-    <string name="help_server_info">معلومات السيرفر</string>
+            <EditText
+                android:id="@+id/nickname"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_bg"
+                android:hint="اسم اللاعب (Nickname)"
+                android:paddingHorizontal="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:textSize="14sp" />
+        </LinearLayout>
 
-    <string name="server_players">%d/%d لاعبين متصلين</string>
-    <string name="server_port_ip">%s : %d</string>
-    <string name="server_time">الوقت - %s</string>
-    <string name="server_mode">الطور - %s</string>
-    <string name="server_map">الخريطة - %s</string>
-    <string name="server_language">اللغة - %s</string>
-    <string name="server_password">كلمة السر - %s</string>
+        <!-- حقول الاتصال -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical">
 
-    <string name="none_string">غير متوفر</string>
+            <EditText
+                android:id="@+id/ip"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@drawable/input_bg"
+                android:hint="IP العنوان"
+                android:paddingHorizontal="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:textSize="14sp" />
 
-    <string name="server_status_pending">جاري التحقق...</string>
-    <string name="server_status_online">أونلاين</string>
-    <string name="server_status_offline">أوفلاين</string>
-    <string name="server_status_not_found">السيرفر غير موجود</string>
-    <string name="server_status_failed_to_fetch">فشل يجلب البيانات</string>
-    <string name="server_status_incorrect_ip">عنوان IP غير صحيح</string>
+            <EditText
+                android:id="@+id/port"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_bg"
+                android:hint="المنفذ Port"
+                android:inputType="number"
+                android:paddingHorizontal="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:textSize="14sp" />
 
-    <string name="settings_nickname_text">تعديل اسم اللاعب</string>
-    <string name="settings_ping_timeout_text">مهلة الاتصال (Ping Timeout)</string>
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/input_bg"
+                android:hint="كلمة السر (إن وجدت)"
+                android:inputType="textPassword"
+                android:paddingHorizontal="12dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#777777"
+                android:textSize="14sp" />
+        </LinearLayout>
 
-    <string name="SAMP_package_name">com.rockstargames.gtasa</string>
+        <!-- قسم السيرفر الرئيسي -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="السيرفر الرئيسي"
+            android:textColor="#00B6FC"
+            android:textStyle="bold"
+            android:textSize="16sp" />
 
-    <string name="app_root_directory_name">OpenSAMP_Launcher</string>
-    <string name="SAMP_download_directory_name">Temp</string>
+        <!-- ⚠️ لازم يكون Custom View مو LinearLayout عادي -->
+        <com.umnicode.samp_launcher.core.ServerView
+            android:id="@+id/server_view"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/card_bg"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp" />
 
-    <!-- تم تصحيح الرموز الخاطئة &amp; في الروابط -->
-    <string name="SAMP_apk_url">https://drive.google.com/uc?export=download&amp;id=1wa15YW81wfsrLMQ2APmCW-XNmJxYZ3</string>
-    <string name="SAMP_data_url">https://www.dropbox.com/s/hti52zezmqy2snw/obb.zip?dl=1</string>
+        <!-- ⚠️ لازم يكون Custom View مو Button عادي -->
+        <com.umnicode.samp_launcher.ui.widgets.playbutton.PlayButton
+            android:id="@+id/play_btn"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#00B6FC"
+            android:text="دخول"
+            android:textColor="#000000"
+            android:textStyle="bold" />
 
-    <string name="installer_status_none_SAMP_found">تم العثور على ملفات SAMP</string>
-    <string name="installer_status_none_SAMP_not_found">ملفات SAMP غير موجودة</string>
-    <string name="installer_status_none_SAMP_cache_not_found">كاش اللعبة غير موجود</string>
-
-    <string name="install_status_downloading_error">خطأ في تحميل الملفات</string>
-    <string name="install_status_extracting_error">خطأ في فك ضغط الملفات</string>
-    <string name="install_status_storage_permissions_denied">تم رفض صلاحية التخزين</string>
-    <string name="install_status_apk_not_found">ملف APK غير موجود</string>
-
-    <string name="installer_status_preparing">جاري التجهيز للتحميل...</string>
-    <string name="installer_status_downloading">جاري تحميل ملفات SAMP %d من %d</string>
-    <string name="installer_status_extracting">جاري فك الضغط %.2f/%.2f MB</string>
-    <string name="installer_status_waiting_for_apk_install">اضغط لتثبيت APK اللعبة</string>
-
-    <string name="installer_progress_bar_full">%.2f/%.2f MB</string>
-    <string name="installer_progress_bar_only_done">%.2f MB</string>
-
-    <string name="installer_button_install">تثبيت SAMP</string>
-    <string name="installer_button_install_cache">تثبيت الكاش</string>
-    <string name="installer_button_retry">إعادة المحاولة</string>
-    <string name="installer_button_cancel">إلغاء</string>
-    <string name="installer_button_waiting_for_apk_install">تثبيت APK</string>
-</resources>
+    </LinearLayout>
+</ScrollView>
