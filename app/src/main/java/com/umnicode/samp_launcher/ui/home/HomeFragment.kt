@@ -65,7 +65,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // نظام طلب الصلاحيات من المستخدم
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -156,7 +155,6 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
-        // عند الضغط على التحميل، سيتم فحص الصلاحية أو طلبها تلقائياً
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
             checkPermissionAndDownload()
@@ -177,7 +175,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // فحص الصلاحية قبل بدء التحميل
     private fun checkPermissionAndDownload() {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             when {
@@ -185,16 +182,13 @@ class HomeFragment : Fragment() {
                     requireContext(),
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED -> {
-                    // الصلاحية ممنوحة بالفعل
                     startProfessionalDownloadAndExtract()
                 }
                 else -> {
-                    // طلب الصلاحية من المستخدم وتظهر له نافذة النظام
                     requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 }
             }
         } else {
-            // للأجهزة الحديثة أندرويد 11 وما فوق
             startProfessionalDownloadAndExtract()
         }
     }
@@ -220,7 +214,6 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
-                // الحفظ في مجلد التنزيلات العام (Download) كما أردت
                 val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 if (!downloadDir.exists()) downloadDir.mkdirs()
                 val zipFile = File(downloadDir, "samp_cache_pro.zip")
@@ -467,7 +460,7 @@ class HomeFragment : Fragment() {
         chartPing.description.isEnabled = false
         chartPing.legend.isEnabled = false
         chartPing.xAxis.isEnabled = false
-        chartPing.axisLeft.isEnabled, false
+        chartPing.axisLeft.isEnabled = false   // تم تصحيح الخطأ هنا (إلغاء الفاصلة ووضع =)
         chartPing.axisRight.isEnabled = false
         chartPing.invalidate()
     }
