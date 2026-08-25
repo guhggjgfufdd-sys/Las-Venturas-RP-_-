@@ -44,6 +44,6 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.google.code.gson:gson:2.9.0'
     
-    // ↓↓↓ جديد: مكتبة رسم البيانات (للـ Ping Chart)
+    // ↓↓↓ جديد: مكتبة رسم البيانات للـ Ping Chart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
