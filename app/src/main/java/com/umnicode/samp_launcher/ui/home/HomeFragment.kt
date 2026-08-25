@@ -38,12 +38,7 @@ class HomeFragment : Fragment() {
         val launcherApplication: LauncherApplication = activity?.application as LauncherApplication
         nicknameText.setText(launcherApplication.userConfig.Nickname)
 
-        val ipEditText: EditText = this.rootView.findViewById(R.id.ip)
-        val portEditText: EditText = this.rootView.findViewById(R.id.port)
         val passwordEditText: EditText = this.rootView.findViewById(R.id.password)
-
-        ipEditText.setText(SERVER_IP)
-        portEditText.setText(SERVER_PORT)
 
         if (sharedPreferences != null) {
             passwordEditText.setText(sharedPreferences.getString(R.id.password.toString(), ""))
