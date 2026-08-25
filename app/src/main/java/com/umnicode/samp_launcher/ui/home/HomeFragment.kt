@@ -1,9 +1,12 @@
 package com.umnicode.samp_launcher.ui.home
 
+import android.Manifest
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -17,6 +20,7 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -61,10 +65,23 @@ class HomeFragment : Fragment() {
         }
     }
 
+    // نظام طلب الصلاحيات من المستخدم
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(context, "✅ تم منح الصلاحية بنجاح", Toast.LENGTH_SHORT).show()
+            startProfessionalDownloadAndExtract()
+        } else {
+            Toast.makeText(context, "❌ تم رفض الصلاحية، لا يمكن تحميل الملف بدونها", Toast.LENGTH_LONG).show()
+        }
+    }
+
     companion object {
         const val DISCORD_URL = "https://discord.gg/eZFKQ83ke"
         const val SERVER_IP = "142.132.203.47"
         const val SERVER_PORT = 21299
+        const val SAMP_PACKAGE = "com.rockstargames.gtasa"
         private const val HIDDEN_NAME = "••••••_"
     }
 
@@ -139,9 +156,10 @@ class HomeFragment : Fragment() {
             Toast.makeText(context, "جاري التحقق...", Toast.LENGTH_SHORT).show()
         }
 
+        // عند الضغط على التحميل، سيتم فحص الصلاحية أو طلبها تلقائياً
         cardDownloadCache.setOnClickListener {
             it.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
-            startProfessionalDownloadAndExtract()
+            checkPermissionAndDownload()
         }
 
         cardDownloadMod.setOnClickListener {
@@ -156,6 +174,28 @@ class HomeFragment : Fragment() {
             cardDownloadCache.visibility = View.GONE
         } else {
             cardDownloadCache.visibility = View.VISIBLE
+        }
+    }
+
+    // فحص الصلاحية قبل بدء التحميل
+    private fun checkPermissionAndDownload() {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    // الصلاحية ممنوحة بالفعل
+                    startProfessionalDownloadAndExtract()
+                }
+                else -> {
+                    // طلب الصلاحية من المستخدم وتظهر له نافذة النظام
+                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            }
+        } else {
+            // للأجهزة الحديثة أندرويد 11 وما فوق
+            startProfessionalDownloadAndExtract()
         }
     }
 
@@ -180,6 +220,7 @@ class HomeFragment : Fragment() {
                 val fileLength = connection.contentLength
                 val input = BufferedInputStream(connection.inputStream)
 
+                // الحفظ في مجلد التنزيلات العام (Download) كما أردت
                 val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 if (!downloadDir.exists()) downloadDir.mkdirs()
                 val zipFile = File(downloadDir, "samp_cache_pro.zip")
@@ -288,15 +329,26 @@ class HomeFragment : Fragment() {
         }
     }
 
-    // تم تعديل هذه الدالة لتجاوز الفحص والاتصال المباشر بالسيرفر دون ظهور رسالة "غير مثبت"
     private fun joinServer() {
         try {
-            val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
-            startActivity(intent)
-            Toast.makeText(context, "🎮 جاري الدخول إلى السيرفر...", Toast.LENGTH_SHORT).show()
+            val pm = requireActivity().packageManager
+            val intent = pm.getLaunchIntentForPackage(SAMP_PACKAGE)
+            if (intent != null) {
+                intent.putExtra("ip", SERVER_IP)
+                intent.putExtra("port", SERVER_PORT)
+                startActivity(intent)
+                Toast.makeText(context, "🎮 جاري الدخول إلى السيرفر...", Toast.LENGTH_SHORT).show()
+            } else {
+                val sampUrl = "samp://$SERVER_IP:$SERVER_PORT"
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(sampUrl))
+                if (browserIntent.resolveActivity(pm) != null) {
+                    startActivity(browserIntent)
+                } else {
+                    Toast.makeText(context, "⚠️ يرجى التأكد من تثبيت مشغل اللعبة أو العميل الداعم للرابط", Toast.LENGTH_LONG).show()
+                }
+            }
         } catch (e: Exception) {
-            Toast.makeText(context, "تعذر الدخول: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "تعذر الدخول: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -415,7 +467,7 @@ class HomeFragment : Fragment() {
         chartPing.description.isEnabled = false
         chartPing.legend.isEnabled = false
         chartPing.xAxis.isEnabled = false
-        chartPing.axisLeft.isEnabled = false
+        chartPing.axisLeft.isEnabled, false
         chartPing.axisRight.isEnabled = false
         chartPing.invalidate()
     }
